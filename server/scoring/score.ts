@@ -18,12 +18,26 @@ export const MIN_SCORE = 0;
 /**
  * Risk bands, aligned with the README report example (42 → HIGH RISK):
  *   80–100 low | 60–79 moderate | 30–59 high | 0–29 critical
+ *
+ * The band from the score is then lifted by a severity floor: a document
+ * containing a critical finding is never labeled below 'high', and one
+ * containing a high finding never below 'moderate'. Without this, a single
+ * mandatory-arbitration clause (−20) would read "80/100 LOW RISK" — a label
+ * that contradicts the finding's own severity.
  */
 export function riskLevelFor(score: number): RiskLevel {
   if (score >= 80) return 'low';
   if (score >= 60) return 'moderate';
   if (score >= 30) return 'high';
   return 'critical';
+}
+
+const LEVEL_RANK: Record<RiskLevel, number> = { low: 0, moderate: 1, high: 2, critical: 3 };
+
+function severityFloor(counts: SeverityCounts): RiskLevel {
+  if (counts.critical > 0) return 'high';
+  if (counts.high > 0) return 'moderate';
+  return 'low';
 }
 
 export interface ScoreResult {
@@ -49,5 +63,8 @@ export function scoreFindings(findings: readonly Finding[]): ScoreResult {
   }
 
   const score = Math.min(MAX_SCORE, Math.max(MIN_SCORE, MAX_SCORE - penalty));
-  return { score, riskLevel: riskLevelFor(score), counts };
+  const band = riskLevelFor(score);
+  const floor = severityFloor(counts);
+  const riskLevel = LEVEL_RANK[floor] > LEVEL_RANK[band] ? floor : band;
+  return { score, riskLevel, counts };
 }

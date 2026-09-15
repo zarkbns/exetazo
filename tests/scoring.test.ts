@@ -81,4 +81,38 @@ describe('deterministic scoring', () => {
     expect(riskLevelFor(29)).toBe('critical');
     expect(riskLevelFor(0)).toBe('critical');
   });
+
+  describe('severity floors', () => {
+    it('never labels a document with a critical finding below HIGH', () => {
+      const result = scoreFindings([makeFinding('critical', 'arb-1', 'mandatory-arbitration')]);
+      expect(result.score).toBe(80);
+      expect(result.riskLevel).toBe('high');
+    });
+
+    it('never labels a document with a high finding below MODERATE', () => {
+      const result = scoreFindings([makeFinding('high', 'liab-1', 'broad-liability-limitation')]);
+      expect(result.score).toBe(90);
+      expect(result.riskLevel).toBe('moderate');
+    });
+
+    it('leaves medium/low-only documents on their score band', () => {
+      expect(scoreFindings([makeFinding('medium')]).riskLevel).toBe('low');
+      expect(scoreFindings([makeFinding('low')]).riskLevel).toBe('low');
+      expect(scoreFindings([makeFinding('medium'), makeFinding('medium')]).riskLevel).toBe('low');
+      // Five mediums = 75 → crosses into the moderate band on score alone (no floor involved)
+      const fiveMediums = Array.from({ length: 5 }, () => makeFinding('medium'));
+      expect(scoreFindings(fiveMediums)).toMatchObject({ score: 75, riskLevel: 'moderate' });
+    });
+
+    it('keeps the band when it already meets the floor', () => {
+      const findings = [
+        makeFinding('critical'),
+        makeFinding('critical'),
+        makeFinding('high'),
+        makeFinding('medium'),
+        makeFinding('low'),
+      ];
+      expect(scoreFindings(findings)).toMatchObject({ score: 43, riskLevel: 'high' });
+    });
+  });
 });
