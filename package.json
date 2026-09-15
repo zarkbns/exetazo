@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build:server": "tsc -p server/tsconfig.json",
+    "start:server": "node dist/server/api/main.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },

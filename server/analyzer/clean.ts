@@ -15,7 +15,7 @@ export interface CleanedDocument {
 
 /** Below this, the "document" is probably a cookie banner, not an agreement. */
 export const MIN_LEGAL_WORDS = 60;
-const MAX_RAW_CHARS = 400_000;
+export const MAX_RAW_CHARS = 400_000;
 const MAX_PARAGRAPH_CHARS = 1200;
 const SENTENCES_PER_CHUNK = 3;
 
