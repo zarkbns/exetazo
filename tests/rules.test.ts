@@ -86,7 +86,7 @@ describe('rules catalog', () => {
     }
   });
 
-  it('keeps contradictory-clauses pattern-free until the cross-check detector ships', () => {
+  it('keeps contradictory-clauses pattern-free; it detects via cross-check pairs instead', () => {
     expect(ruleFor('contradictory-clauses').patterns).toEqual([]);
   });
 });

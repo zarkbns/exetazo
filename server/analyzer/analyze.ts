@@ -2,6 +2,7 @@ import { Finding, RiskCategory, RISK_CATEGORIES, ScanReport, ScanRequest, Severi
 import { cleanText, MIN_LEGAL_WORDS } from './clean';
 import { evaluateRules, findingId } from '../rules/engine';
 import { ruleFor } from '../rules/catalog';
+import { detectContradictions } from '../rules/contradictions';
 import { scoreFindings } from '../scoring/score';
 import { SemanticAnalyzer, AiCandidate } from '../llm/types';
 
@@ -50,13 +51,14 @@ export async function analyzeText(request: ScanRequest, options: AnalyzeOptions 
 
   const warnings = [...cleaned.warnings];
   const ruleFindings = evaluateRules(cleaned.paragraphs);
-  const allFindings: Finding[] = [...ruleFindings];
+  const contradictionFindings = detectContradictions(cleaned.paragraphs);
+  const allFindings: Finding[] = [...ruleFindings, ...contradictionFindings];
 
   let aiUsed = false;
   if (options.ai) {
     try {
       const candidates = await options.ai.detectParagraphs(cleaned.paragraphs);
-      const merged = mergeAiCandidates(candidates, ruleFindings, cleaned.paragraphs);
+      const merged = mergeAiCandidates(candidates, allFindings, cleaned.paragraphs);
       allFindings.push(...merged);
       aiUsed = merged.length > 0;
     } catch {
