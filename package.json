@@ -1,0 +1,22 @@
+{
+  "name": "exetazo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Legal security before you agree. Scans legal agreements for risky clauses with deterministic, evidence-based scoring.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build:server": "tsc -p server/tsconfig.json",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.0"
+  }
+}
