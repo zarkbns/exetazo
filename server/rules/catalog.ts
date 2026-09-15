@@ -19,12 +19,11 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     recommendation:
       'Look for language requiring advance notice (e.g. 30 days) and a chance to reject changes. Absent that, assume any term can change underneath you.',
     patterns: [
-      /((modify|change|amend|update|revise)[^.]{0,80}(terms|agreement|policy|policies)[^.]{0,120}(at any time|without (prior )?notice|effective (immediately|upon posting)|by posting|upon posting))/i,
-      /(reserve[sd]? the right)[^.]{0,60}(modify|change|amend|update|revise)/i,
-      /(modify|change|amend|update)[^.]{0,40}(these|this) (terms|agreement)[^.]{0,120}(at any time|without (prior )?notice|effective (immediately|upon posting))/i,
+      /\b(modif\w*|amend\w*|updat\w*|chang\w*|revis\w*)[^.]{0,80}(terms|agreement|policy|policies)[^.]{0,120}(at any time|without (prior )?notice|effective (immediately|upon posting)|by posting|upon posting)/i,
+      /reserve[sd]? the right[^.]{0,60}(modif\w*|amend\w*|updat\w*|chang\w*|revis\w*)[^.]{0,80}(terms|agreement|policy|policies)/i,
     ],
     negations: [
-      /(\d+[-\s]?day|\d+[-\s]?month)['s]{0,2}\s*(advance\s+)?notice/i,
+      /\b\d+[^.]{0,30}(day|week|month)[^.]{0,30}(prior to|before|in advance|notice)/i,
       /(will|shall)\s+(provide|give|notify)\s+(you\s+)?(at least\s+)?\d+[^.]{0,20}notice/i,
     ],
     baseConfidence: 85,
@@ -74,6 +73,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
       /(may not|cannot|will not|shall not|not)\s+(be\s+)?(brought|brought as|join|joined|participat\w+|maintained)[^.]{0,60}(as\s+)?(a\s+)?(class[-\s]?action|class wide|representative (action|proceeding|capacity))/i,
       /(on|in)\s+a\s+(class|collective|representative)\s+basis/i,
       /class[-\s]?(wide|arbitration|relief|proceeding)/i,
+      /individual (capacity|basis)|class member|class or representative proceeding/i,
     ],
     negations: [
       /(may|can|allowed to)\s+(join|participat\w+|bring)\s+[^.]{0,40}class[-\s]?action/i,
@@ -144,10 +144,13 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     recommendation:
       'Check for carve-outs (gross negligence, willful misconduct, data breaches). Note whether any cap is tied to amounts you actually paid.',
     patterns: [
-      /(in no event|not be liable|under no circumstances)[^.]{0,120}(any|all|indirect|consequential|special|incidental|punitive|exemplary)\s+(damages|losses|liability)/i,
+      /(in no event|not\s+be\s+liable|not\s+liable|under no circumstances)[^.]{0,160}((any|all|indirect|consequential|special|incidental|punitive|exemplary)[^.]{0,160}(damages|losses|liability))/i,
       /(be\s+)?liable\s+for\s+(any|all)\s+(damages|losses)/i,
       /disclaims?\s+all\s+(warranties|representations)/i,
       /(total|aggregate|entire)\s+liability[^.]{0,60}(shall\s+not\s+exceed|is\s+limited\s+to|limited\s+to)/i,
+    ],
+    negations: [
+      /(caused by|resulting from)[^.]{0,60}(our|its|their)\s+(own\s+)?(gross\s+)?(negligence|misconduct|willful|wrongdoing)/i,
     ],
     baseConfidence: 75,
   },
@@ -254,9 +257,9 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     recommendation:
       'Back up anything you care about. Check whether a refund or data-export path is promised on termination.',
     patterns: [
-      /(terminate|suspend|delete|deactivate|disable)[^.]{0,60}(your|the|a)\s+(account|access)[^.]{0,120}(at any time|for any reason|without (prior )?notice|with or without cause)/i,
+      /(terminate|suspend|delete|deactivate|disable)[^.]{0,60}(your|the|a)\s+(?:\w+\s+)?(account|access)[^.]{0,120}(at any time|for any reason|without (prior )?notice|with or without cause)/i,
       /(reserve[sd]? the right)[^.]{0,60}(terminate|suspend|delete|deactivate)[^.]{0,120}(at any time|for any reason|without (prior )?notice)/i,
-      /(terminate|suspend|delete)[^.]{0,40}(at any time|for any reason)[^.]{0,40}(without (prior )?notice)?/i,
+      /(terminate|suspend|delete)[^.]{0,60}(at any time|for any reason)/i,
     ],
     negations: [
       /for\s+(material\s+)?breach[^.]{0,40}(of|these)/i,
@@ -304,7 +307,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
       /(charge|bill)[^.]{0,60}(your )?(payment method|credit card|card on file)[^.]{0,80}(without|for renewal)/i,
     ],
     negations: [
-      /(\d+[-\s]?day|\d+[-\s]?month)['s]{0,2}\s*(advance\s+)?notice/i,
+      /\b\d+[^.]{0,30}(day|week|month)[^.]{0,30}(prior to|before|in advance|notice)/i,
       /will\s+not\s+(increase|change)/i,
     ],
     baseConfidence: 75,

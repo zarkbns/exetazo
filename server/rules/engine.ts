@@ -13,7 +13,7 @@ const DEFAULT_ONE_PER_CATEGORY = true;
 
 /** Findings per category per unique evidence — repeated clauses of the same
  * type are one underlying issue and must not double-count. */
-function findingId(category: RiskCategory, evidence: string): string {
+export function findingId(category: RiskCategory, evidence: string): string {
   const normalized = evidence.toLowerCase().replace(/\s+/g, ' ').trim();
   const hash = createHash('sha1').update(normalized).digest('hex').slice(0, 12);
   return `${category}:${hash}`;
