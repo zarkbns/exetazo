@@ -28,6 +28,9 @@ const POSITIVE_CASES: ReadonlyArray<[RiskCategory, string]> = [
   ['venue-jurisdiction', 'You agree to submit to the exclusive jurisdiction of the courts located in Delaware.'],
   ['hidden-fees', 'All fees are subject to change at any time without notice.'],
   ['broad-ip-ownership', 'You hereby grant us a perpetual, irrevocable license to use your content in any way we see fit.'],
+  ['broad-ip-ownership', 'You grant each party who has access to the project a nonexclusive, worldwide, irrevocable license to use, reproduce, prepare derivatives, distribute, perform, and display Contributed Content you contribute as an End User.'],
+  ['broad-indemnification', 'As permitted by applicable law, you agree to release, indemnify, and hold harmless AWS and its affiliates from and against any liability relating to any acts or omissions of such third parties.'],
+  ['data-retention-ambiguity', 'We’ll retain your Personal Data as long as your account is active and as needed to fulfill contractual obligations, comply with legal requirements, resolve disputes, and enforce agreements.'],
 ];
 
 const NEGATIVE_CASES: ReadonlyArray<[RiskCategory, string]> = [
@@ -49,6 +52,20 @@ const NEGATIVE_CASES: ReadonlyArray<[RiskCategory, string]> = [
   ['hidden-fees', 'Fees will not increase during your subscription term.'],
   ['broad-ip-ownership', 'You retain ownership of all content you create; we claim no ownership.'],
   ['broad-ip-ownership', 'You grant us a worldwide, royalty-free license to host, store, and display your content solely to operate the service.'],
+
+  // Real-world false positives caught by scanning live policies (2026-09-20).
+  // Each one quotes the clause that used to trigger a wrong finding.
+  ['data-sale-permission', 'You may not use the API to download data or Content from GitHub for spamming purposes, including for the purposes of selling GitHub users\' personal information, such as to recruiters, headhunters, and job boards.'],
+  ['data-sale-permission', 'We do not “sell” or “share” the personal information of known minors under 16 years of age.'],
+  ['data-sale-permission', 'For each Seller, we will collect the necessary data and tax forms to enable compliance with applicable tax laws.'],
+  ['mandatory-arbitration', 'An individual has the possibility, under certain conditions, to invoke binding arbitration for complaints regarding DPF compliance not resolved by any of the other DPF mechanisms.'],
+  ['broad-ip-ownership', "By making a repository public, you grant other Users a nonexclusive, worldwide license to use, display, perform and reproduce (by forking) Your Content through the Service as permitted by GitHub's functionality."],
+  ['automatic-renewal', 'AWS may change, discontinue, or deprecate support for a Security Offering (within the AWS Security Hub Extended plan) at any time. Upon discontinuation or deprecation of support for a Security Offering, your access to that Security Offering through the Security Hub Extended plan will be discontinued.'],
+  ['data-retention-ambiguity', 'The obligations under this Section 50.10 will apply only if you: (a) give AWS prompt written notice of the claim; (b) permit AWS to control the defense of the claim; (c) retain and provide sufficient records to the extent necessary to evaluate your eligibility for the defense of claims and indemnity set forth in this Section 50.10.'],
+  ['broad-indemnification', 'Each Seller will indemnify us and our affiliates against any claim or demand for payment of any Taxes imposed in connection with any Transaction, and for any fines, penalties, or similar charges imposed as a result of the Seller’s failure to collect, remit, or report any Taxes in connection with any Transaction.'],
+  ['difficult-cancellation', 'Either you or AWS may cancel your EST engagement with 15 days written notice, which may be via email. AWS will charge you for the full month during which the cancellation takes effect.'],
+  ['unilateral-modification', "Short version: We want our users to be informed of important changes to our terms, but some changes aren't that important — we don't want to bother you every time we fix a typo. So while we may modify this agreement at any time, we will notify users of any material changes and give you time to adjust to them."],
+  ['hidden-fees', 'If you agree to a subscription price, that will remain your price for the duration of the payment term; however, prices are subject to change at the end of a payment term.'],
 ];
 
 /** A fair, consumer-friendly document — the false-positive control. */

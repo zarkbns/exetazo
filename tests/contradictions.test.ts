@@ -89,6 +89,22 @@ describe('contradiction cross-checks', () => {
     expect(new Set(first.map((f) => f.id)).size).toBe(2);
   });
 
+  it('does not treat a "Do Not Share My Personal Information" link label as a promise', () => {
+    const findings = detectContradictions([
+      para('To opt out of the sharing of your personal information, you can click on the "Do Not Share My Personal Information" link on the footer of our Websites.', 0),
+      para('Partners and Resellers: We may share your data with these partners and resellers where allowed, and with your consent when required.', 1),
+    ]);
+    expect(findings).toEqual([]);
+  });
+
+  it('does not flag a share grant that is qualified by consent or law', () => {
+    const findings = detectContradictions([
+      para('We do not share your personal information with third parties.', 0),
+      para('We may share your data with these partners and resellers where allowed, and with your consent when required.', 1),
+    ]);
+    expect(findings).toEqual([]);
+  });
+
   it('produces no contradictions on the real ToS fixtures (GitHub, Cloudflare, Mozilla)', () => {
     const github = [
       'It is your responsibility to properly cancel your Account with GitHub. You can cancel your Account at any time by going into your Settings in the global navigation bar at the top of the screen. The Account screen provides a simple, no questions asked cancellation link. We are not able to cancel Accounts in response to an email or phone request.',
