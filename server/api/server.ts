@@ -17,7 +17,7 @@ import { SemanticAnalyzer } from '../llm/types';
  *   500 server-error     — unexpected failure
  */
 
-const MAX_BODY_BYTES = 2_000_000;
+export const MAX_BODY_BYTES = 2_000_000;
 const DEFAULT_TIMEOUT_MS = 5000;
 
 export class TimeoutError extends Error {
@@ -27,7 +27,7 @@ export class TimeoutError extends Error {
   }
 }
 
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new TimeoutError()), ms);
     promise.then(
@@ -43,7 +43,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   });
 }
 
-function parseScanRequest(raw: string): ScanRequest | null {
+export function parseScanRequest(raw: string): ScanRequest | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -60,7 +60,7 @@ function parseScanRequest(raw: string): ScanRequest | null {
   };
 }
 
-function sendJson(res: http.ServerResponse, status: number, payload: unknown): void {
+export function sendJson(res: http.ServerResponse, status: number, payload: unknown): void {
   const body = JSON.stringify(payload);
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
@@ -71,7 +71,7 @@ function sendJson(res: http.ServerResponse, status: number, payload: unknown): v
   res.end(body);
 }
 
-function scanError(status: number, code: ScanError['code'], error: string, details?: string): ScanError {
+export function scanError(status: number, code: ScanError['code'], error: string, details?: string): ScanError {
   return { error, code, ...(details ? { details } : {}) };
 }
 
