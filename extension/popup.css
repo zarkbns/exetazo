@@ -1,0 +1,90 @@
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: #0b1220;
+  color: #e6ecf7;
+  font: 14px/1.5 -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.popup {
+  width: 280px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.tagline {
+  font-size: 11px;
+  color: #93a1bd;
+}
+
+.last-result {
+  border: 1px solid #24314d;
+  border-radius: 10px;
+  background: #16223a;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.last-result.hidden {
+  display: none;
+}
+
+.last-result .score {
+  font-size: 22px;
+  font-weight: 800;
+  margin-right: 6px;
+}
+
+.last-result .level {
+  color: #93a1bd;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.scan-button {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 800;
+  font-size: 14px;
+  color: #0b1220;
+  background: #60a5fa;
+  cursor: pointer;
+}
+
+.scan-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.scan-button:not(:disabled):hover {
+  filter: brightness(1.1);
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  color: #93a1bd;
+}
+
+.disclaimer {
+  margin: 0;
+  font-size: 10px;
+  color: #64748b;
+}

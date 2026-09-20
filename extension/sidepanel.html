@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Exetazo Report</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">Exetazo</span>
+      <span class="brand-sub">legal security, before you agree</span>
+    </div>
+    <button id="scan-button" class="scan-button" type="button">Scan page</button>
+  </header>
+
+  <main id="content" class="content">
+    <section id="status" class="status hidden"></section>
+    <section id="summary" class="summary hidden"></section>
+    <section id="findings" class="findings"></section>
+  </main>
+
+  <footer class="disclaimer">
+    Exetazo flags <strong>potential</strong> risks with deterministic rules — it is not legal advice,
+    not a substitute for a lawyer, and not definitive. Jurisdiction and context matter.
+  </footer>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
