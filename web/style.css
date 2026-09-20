@@ -91,16 +91,8 @@ a {
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: var(--purple);
-  color: var(--black);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.brand-mark svg {
-  width: 15px;
-  height: 15px;
+  display: block;
+  flex: none;
 }
 
 .brand-name {
