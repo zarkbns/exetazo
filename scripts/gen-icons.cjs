@@ -86,23 +86,23 @@ function drawIcon(size) {
         continue;
       }
       const t = y / s;
-      pixels[idx] = Math.round(11 + 20 * t); // R
-      pixels[idx + 1] = Math.round(18 + 24 * t); // G
-      pixels[idx + 2] = Math.round(32 + 38 * t); // B
+      pixels[idx] = Math.round(180 - 33 * t); // R
+      pixels[idx + 1] = Math.round(168 - 34 * t); // G
+      pixels[idx + 2] = Math.round(246 - 20 * t); // B
       pixels[idx + 3] = 255;
 
       // magnifier ring
       const dist = Math.hypot(x - cx, y - cy);
       if (dist <= ringOuter && dist >= ringInner) {
-        pixels[idx] = 245;
-        pixels[idx + 1] = 247;
-        pixels[idx + 2] = 250;
+        pixels[idx] = 255;
+        pixels[idx + 1] = 253;
+        pixels[idx + 2] = 248;
       }
       // glass tint inside the ring
       if (dist < ringInner) {
-        pixels[idx] = Math.round(pixels[idx] * 0.55 + 96 * 0.45);
-        pixels[idx + 1] = Math.round(pixels[idx + 1] * 0.55 + 165 * 0.45);
-        pixels[idx + 2] = Math.round(pixels[idx + 2] * 0.55 + 250 * 0.45);
+        pixels[idx] = Math.round(pixels[idx] * 0.55 + 60 * 0.45);
+        pixels[idx + 1] = Math.round(pixels[idx + 1] * 0.55 + 49 * 0.45);
+        pixels[idx + 2] = Math.round(pixels[idx + 2] * 0.55 + 91 * 0.45);
       }
       // handle: diagonal segment from ring edge outward
       const hx0 = cx + ringOuter * 0.7071;
@@ -117,9 +117,9 @@ function drawIcon(size) {
       const py = hy0 + t2 * vy;
       const distToHandle = Math.hypot(x - px, y - py);
       if (distToHandle <= handleWidth / 2) {
-        pixels[idx] = 245;
-        pixels[idx + 1] = 247;
-        pixels[idx + 2] = 250;
+        pixels[idx] = 255;
+        pixels[idx + 1] = 253;
+        pixels[idx + 2] = 248;
       }
     }
   }
