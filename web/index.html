@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exetazo — Legal security before you agree</title>
-  <meta name="description" content="Exetazo is a Chrome extension that scans terms of service, privacy policies, and subscription agreements for risky clauses — with deterministic scoring and evidence on every finding. Not legal advice." />
+  <meta name="description" content="Exetazo is a Chrome extension that reads the terms of service for you and shows the clauses that could cost you money, your data, or your right to sue — with the exact sentence behind every flag. Not legal advice." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -23,9 +23,9 @@
 
       <div class="nav-links">
         <a href="#how">How it works</a>
-        <a href="#categories">Risk categories</a>
+        <a href="#categories">What it checks</a>
         <a href="#privacy">Privacy</a>
-        <a href="#disclaimer">Disclaimer</a>
+        <a href="#disclaimer">Not legal advice</a>
       </div>
 
       <div class="nav-actions">
@@ -49,9 +49,9 @@
     <h1>Legal security <span class="accent">before</span> you agree.</h1>
 
     <p class="sub">
-      Exetazo is a Chrome extension that scans terms of service, privacy policies, and
-      subscription agreements for risky clauses — before you click accept. Every finding
-      points to the exact text that triggered it.
+      Exetazo reads the terms of service for you, then shows the clauses that could cost
+      you money, your data, or your right to sue. Every flag comes with the exact sentence
+      it came from — so you can check it yourself.
     </p>
 
     <div class="hero-ctas">
@@ -90,7 +90,22 @@
         </blockquote>
       </div>
 
-      <p class="report-note">Sample report — the extension renders real scans from deterministic rules, not AI opinions.</p>
+      <div class="report-legend">
+        <div class="legend-item">
+          <strong>Score</strong>
+          Out of 100. Lower means more risk — 100 is clean.
+        </div>
+        <div class="legend-item">
+          <strong>Severity</strong>
+          How much a clause could hurt you, from critical down to low.
+        </div>
+        <div class="legend-item">
+          <strong>Evidence</strong>
+          The exact sentence on the page that triggered the flag.
+        </div>
+      </div>
+
+      <p class="report-note">Sample report — the extension builds real ones from fixed rules, not AI opinions.</p>
     </div>
   </header>
 
@@ -98,40 +113,40 @@
   <section class="section container" id="how">
     <div class="section-head">
       <span class="section-kicker">How it works</span>
-      <h2>A security audit, in four steps.</h2>
-      <p>No chatbot, no summary to trust on faith. A rule-based scanner that shows its work.</p>
+      <h2>Four steps, about five seconds.</h2>
+      <p>No chatbot to trust on faith. A scanner that shows its work and lets you check it.</p>
     </div>
 
     <div class="steps">
       <div class="step">
         <div class="step-num">01</div>
-        <h3>Open any legal page</h3>
-        <p>Terms of service, privacy policies, subscription agreements — the fine print everywhere.</p>
+        <h3>Open a terms page</h3>
+        <p>Any terms of service, privacy policy, or subscription agreement you're about to accept.</p>
       </div>
       <div class="step">
         <div class="step-num">02</div>
-        <h3>Hit Scan</h3>
-        <p>The extension extracts the page's legal text, strips navigation and cookie noise, and analyzes it in seconds.</p>
+        <h3>Click Scan</h3>
+        <p>Exetazo reads the page and ignores the menus, banners, and cookie pop-ups.</p>
       </div>
       <div class="step">
         <div class="step-num">03</div>
         <h3>Read the report</h3>
-        <p>A security-style score out of 100 with severity-ranked findings — critical clauses first.</p>
+        <p>You get a score out of 100 and a list of risky clauses, worst first.</p>
       </div>
       <div class="step">
         <div class="step-num">04</div>
-        <h3>See the clause</h3>
-        <p>Click a finding and the exact clause highlights on the page, with why it matters and what to watch for.</p>
+        <h3>See the exact sentence</h3>
+        <p>Tap a finding and the clause lights up on the page, with why it matters.</p>
       </div>
     </div>
   </section>
 
-  <!-- Risk categories accordion -->
+  <!-- What it checks -->
   <section class="section container" id="categories">
     <div class="section-head">
-      <span class="section-kicker">Laws &amp; rules</span>
-      <h2>15 clause types it watches for.</h2>
-      <p>Every category has an explicit definition and severity logic — no black boxes. Open one to see what it means.</p>
+      <span class="section-kicker">What it checks</span>
+      <h2>15 risky clause types, in plain English.</h2>
+      <p>Each one has a written definition and a fixed severity — nothing hidden. Tap a card to see what it means.</p>
     </div>
 
     <div class="accordion">
@@ -143,7 +158,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>The company can change the terms at any time — without asking you, and sometimes without telling you. Whatever you agreed to can become something else entirely.</p>
+          <p>They can change the rules after you agree — sometimes without telling you. The deal you accepted can quietly become a different deal.</p>
         </div>
       </div>
 
@@ -154,7 +169,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>You give up the right to sue in court. Disputes go to a private arbitrator chosen under rules the company picked.</p>
+          <p>You give up your right to go to court. A private arbitrator decides instead, under rules the company chose.</p>
         </div>
       </div>
 
@@ -165,7 +180,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>You can't join a class lawsuit. If the company harms thousands of people a little each, no one can pool their claims.</p>
+          <p>You can't join a group lawsuit. If a company takes $5 from a million people, no one can realistically sue alone.</p>
         </div>
       </div>
 
@@ -176,7 +191,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>Your subscription renews on its own, without a clear reminder — and the clock on any refund window keeps running.</p>
+          <p>The subscription renews by itself. Miss the cancellation window and you're paying for another term.</p>
         </div>
       </div>
 
@@ -187,7 +202,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>Cancelling requires a phone call, a mailed letter, or a maze of steps — while signing up took one click.</p>
+          <p>Signing up took one click. Cancelling needs a phone call, a letter, or a maze of steps.</p>
         </div>
       </div>
 
@@ -198,7 +213,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>The company limits what it owes you when things go wrong — capping damages or disclaiming warranties in sweeping terms.</p>
+          <p>If the service breaks and you lose money, they cap what they owe you — sometimes at nothing.</p>
         </div>
       </div>
 
@@ -209,7 +224,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>You agree to cover the company's legal costs — even for disputes that aren't your fault.</p>
+          <p>You agree to pay their legal bills — even for disputes you didn't cause.</p>
         </div>
       </div>
 
@@ -220,7 +235,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>Your data can be shared with a long list of third parties — affiliates, partners, "service providers" — under vague purposes.</p>
+          <p>Your data goes to "partners", "affiliates", and "service providers". Those words can mean almost anyone.</p>
         </div>
       </div>
 
@@ -231,7 +246,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>The terms explicitly allow selling your personal information, or treat "sharing" and "selling" as the same thing.</p>
+          <p>The terms allow selling your personal information — or treat "sharing" and "selling" as the same thing.</p>
         </div>
       </div>
 
@@ -242,7 +257,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>It's unclear how long your data is kept — or deletion only applies to some of it, "where required by law".</p>
+          <p>It never says how long they keep your data — only "as long as necessary".</p>
         </div>
       </div>
 
@@ -253,7 +268,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>The company can suspend or delete your account for vague reasons — "harmful conduct", "any reason" — with no appeal.</p>
+          <p>They can close your account for vague reasons — "harmful conduct", "any reason" — with no appeal.</p>
         </div>
       </div>
 
@@ -264,7 +279,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>Disputes must be fought in a specific court or location — often one far from you and convenient for the company.</p>
+          <p>Disputes must be settled in a court they picked — often far from where you live.</p>
         </div>
       </div>
 
@@ -275,7 +290,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>Unclear pricing, surprise charges, or the right to change prices mid-subscription with minimal notice.</p>
+          <p>Prices can change mid-subscription, or extra charges show up later.</p>
         </div>
       </div>
 
@@ -286,7 +301,7 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>The company claims broad rights over your content — a license so wide it can outlive your account, or read like ownership.</p>
+          <p>They claim wide rights over what you post — sometimes forever, even after you delete it.</p>
         </div>
       </div>
 
@@ -297,19 +312,19 @@
           <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div class="cat-panel">
-          <p>The document promises one thing in one section and takes it back in another. Exetazo cross-checks sections to catch the contradiction.</p>
+          <p>One section promises something, another takes it back. Exetazo compares sections to catch the conflict.</p>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- Why deterministic -->
+  <!-- Why Exetazo -->
   <section class="section container" id="why">
     <div class="section-head">
       <span class="section-kicker">Why Exetazo</span>
-      <h2>Audit-grade by design.</h2>
-      <p>Borrowed from smart-contract security: deterministic rules, quoted evidence, reproducible results.</p>
+      <h2>Every flag shows its receipt.</h2>
+      <p>Built like a security audit: fixed rules, quoted evidence, results you can reproduce.</p>
     </div>
 
     <div class="pillars">
@@ -317,23 +332,23 @@
         <div class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><path d="M17 13l3 3-3 3" stroke-width="2"/></svg>
         </div>
-        <h3>Evidence over claims</h3>
-        <p>Every finding quotes the exact clause text and where it sits in the document. Nothing is flagged without a source you can check yourself.</p>
+        <h3>You can check the evidence</h3>
+        <p>Each finding quotes the sentence that triggered it and shows where it sits in the document. Nothing is flagged without a source.</p>
       </div>
       <div class="pillar">
         <div class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
         </div>
-        <h3>Rules, not vibes</h3>
-        <p>Severity comes from a rules engine, not AI confidence. Scan the same document twice and you get the same score — that's the point.</p>
+        <h3>The score is math, not an AI opinion</h3>
+        <p>Start at 100 and subtract a fixed penalty per finding. Scan the same page twice and you get the same score — the AI never sets it.</p>
         <span class="formula">100 − 20·critical − 10·high − 5·medium − 2·low</span>
       </div>
       <div class="pillar">
         <div class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
         </div>
-        <h3>Nothing kept</h3>
-        <p>Page text is analyzed and discarded. No documents stored, no accounts, no tracking. Credentials only ever live server-side.</p>
+        <h3>Nothing is kept</h3>
+        <p>The page text is analyzed and thrown away. No account, no document archive, no tracking. API keys stay on the server.</p>
       </div>
     </div>
   </section>
@@ -341,43 +356,79 @@
   <!-- Privacy -->
   <section class="section container" id="privacy">
     <div class="privacy">
-      <h2>Built private by default.</h2>
+      <h2>Private by default, because there's nothing to store.</h2>
       <div class="privacy-facts">
         <div class="fact">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
-          No accounts, no sign-up
+          No account, no sign-up
         </div>
         <div class="fact">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
-          Full documents never stored
+          Documents are never stored
         </div>
         <div class="fact">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
-          Secrets server-side only — never in the extension
+          Keys stay server-side, never in the extension
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Try it on -->
+  <!-- Works on real pages -->
   <div class="try-strip">
     <div class="container try-inner">
       <span class="try-label">Works on real pages</span>
       <div class="try-logos">
-        <span>Notion</span>
-        <span>Stripe</span>
-        <span>GitHub</span>
-        <span>AWS</span>
-        <span>Figma</span>
+        <span class="brand-chip">
+          <img src="assets/logos/notion.svg" alt="" width="18" height="18" />
+          Notion
+        </span>
+        <span class="brand-chip">
+          <img src="assets/logos/stripe.svg" alt="" width="18" height="18" />
+          Stripe
+        </span>
+        <span class="brand-chip">
+          <img src="assets/logos/github.svg" alt="" width="18" height="18" />
+          GitHub
+        </span>
+        <span class="brand-chip">
+          <img class="wide" src="assets/logos/aws.svg" alt="" width="30" height="18" />
+          AWS
+        </span>
+        <span class="brand-chip">
+          <img src="assets/logos/figma.svg" alt="" width="18" height="18" />
+          Figma
+        </span>
       </div>
     </div>
   </div>
 
-  <!-- Disclaimer -->
+  <!-- Not legal advice -->
   <section class="section container" id="disclaimer">
+    <div class="section-head">
+      <span class="section-kicker">The fine print on us</span>
+      <h2>What Exetazo is not.</h2>
+      <p>It's a tool that points things out. It doesn't tell you what the law says about them.</p>
+    </div>
+
+    <div class="not-list">
+      <div class="not-item">
+        <strong>Not legal advice.</strong>
+        No attorney-client relationship, no opinion on whether a clause is legal or illegal.
+      </div>
+      <div class="not-item">
+        <strong>Not a verdict.</strong>
+        It flags potential risks worth a closer look. Jurisdiction, context, and exact wording all matter.
+      </div>
+      <div class="not-item">
+        <strong>Not a chatbot.</strong>
+        It doesn't answer questions about your contract. It audits the text and shows you what it found.
+      </div>
+    </div>
+
     <div class="disclaimer-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-      <p><strong>Exetazo is not legal advice.</strong> It flags <em>potential</em> risks for human review — it does not create an attorney-client relationship, does not guarantee a clause is legal or illegal, and is not a substitute for a lawyer. Jurisdiction, context, and specific wording all matter. For important agreements, consult a lawyer.</p>
+      <p>For anything important — a lease, a job contract, a settlement — talk to a lawyer. Exetazo is a second pair of eyes, not a substitute for one.</p>
     </div>
   </section>
 
@@ -385,7 +436,7 @@
   <section class="section container">
     <div class="final-cta">
       <h2>Stop agreeing to what you haven't read.</h2>
-      <p>Free, open source, and private by default. Load it in Chrome and scan your next agreement.</p>
+      <p>Free and open source. Load it in Chrome and scan your next agreement.</p>
       <a href="https://github.com/zarkbns/exetazo#readme" class="btn btn-lime">
         Get the extension
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M14 5l7 7-7 7"/></svg>
@@ -399,7 +450,8 @@
       <span>Exetazo — legal security before you agree. Not legal advice. MIT license.</span>
       <div class="footer-links">
         <a href="#how">How it works</a>
-        <a href="#categories">Risk categories</a>
+        <a href="#categories">What it checks</a>
+        <a href="#disclaimer">Not legal advice</a>
         <a href="https://github.com/zarkbns/exetazo" target="_blank" rel="noopener">GitHub</a>
       </div>
       <span>Built for LexHack 2026</span>
