@@ -1,4 +1,13 @@
 const path = require('path');
+const webpack = require('webpack');
+const { resolveApiOrigin } = require('../scripts/api-origin.cjs');
+
+const { origin, production } = resolveApiOrigin();
+console.log(
+  production
+    ? `extension API origin: ${origin} (production)`
+    : `extension API origin: ${origin} (local development — set EXETAZO_API_ORIGIN for a production build)`,
+);
 
 module.exports = {
   mode: 'production',
@@ -28,6 +37,11 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      __EXETAZO_API_BASE__: JSON.stringify(origin),
+    }),
+  ],
   optimization: {
     minimize: false,
   },

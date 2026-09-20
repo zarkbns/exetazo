@@ -1,12 +1,18 @@
 import { ScanReport, ScanError } from '../../shared/types';
 
 /**
- * Extension message protocol and backend endpoint. The backend URL is the
- * only configuration the extension holds — no secrets, ever. Analysis
- * credentials live server-side only.
+ * Extension message protocol and backend endpoint.
+ *
+ * The API origin is injected at build time from EXETAZO_API_ORIGIN
+ * (see extension/webpack.config.cjs and .env.example); unset, it points at the
+ * local development server. It is configuration, not a secret: the extension
+ * holds no credentials, and analysis secrets live server-side only.
  */
 
-export const API_BASE = 'http://127.0.0.1:8787';
+declare const __EXETAZO_API_BASE__: string;
+
+export const API_BASE =
+  typeof __EXETAZO_API_BASE__ === 'string' ? __EXETAZO_API_BASE__ : 'http://127.0.0.1:8787';
 export const ANALYZE_TIMEOUT_MS = 20_000;
 
 export interface ExtractResult {
