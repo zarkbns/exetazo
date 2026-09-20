@@ -264,12 +264,30 @@ Jurisdiction, context, and specific wording all matter. Always consult a lawyer 
 5. See report: "42 / 100 HIGH RISK"
 6. Read severity counts (4 Critical, 3 High, 3 Medium, 2 Low)
 7. Click "Unilateral Modification" finding
-8. Page scrolls and highlights the actual clause in red
+8. Page scrolls and highlights the actual clause (lime, settling to lavender)
 9. Side panel shows:
    - EVIDENCE: "We reserve the right to modify these terms at any time..."
    - EXPLANATION: "Company can change terms without notice or consent..."
    - RECOMMENDATION: "Negotiate a clause requiring 30-day notice..."
    - CONFIDENCE: 95%
+```
+
+### Reproducible demo
+
+Run the backend **rules-only** so the score is pure rules and re-scanning the same
+page always reproduces it:
+
+```bash
+env -u OPENAI_API_KEY -u OPENAI_BASE_URL -u OPENAI_MODEL npm run start:server
+```
+
+With semantic analysis enabled the model can contribute findings the rules
+missed, and those findings subtract from the score — so two scans of the same
+page could differ. Verify the whole path at any time (five live policies, each
+scanned twice, with the determinism verdict):
+
+```bash
+npm run validate:pages
 ```
 
 ---
