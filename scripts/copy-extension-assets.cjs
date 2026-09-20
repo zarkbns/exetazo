@@ -16,12 +16,19 @@ const staticFiles = [
   'sidepanel.css',
 ];
 
+// Master brand source — the downscaled logo.png is what ships, not the 1.7MB original.
+const SOURCE_ONLY = new Set(['logoo.png']);
+
 fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
 for (const file of staticFiles) {
   fs.copyFileSync(path.join(root, file), path.join(dist, file));
   console.log(`copied ${file}`);
 }
 for (const icon of fs.readdirSync(path.join(root, 'assets'))) {
+  if (SOURCE_ONLY.has(icon)) {
+    console.log(`skipped assets/${icon} (master source, not shipped)`);
+    continue;
+  }
   fs.copyFileSync(path.join(root, 'assets', icon), path.join(dist, 'assets', icon));
   console.log(`copied assets/${icon}`);
 }
