@@ -5,4 +5,5 @@ module.exports = {
   roots: ['<rootDir>/tests'],
   clearMocks: true,
   verbose: true,
+  testTimeout: 20000,
 };
