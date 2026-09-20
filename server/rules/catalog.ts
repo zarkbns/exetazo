@@ -25,6 +25,8 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     negations: [
       /\b\d+[^.]{0,30}(day|week|month)[^.]{0,30}(prior to|before|in advance|notice)/i,
       /(will|shall)\s+(provide|give|notify)\s+(you\s+)?(at least\s+)?\d+[^.]{0,20}notice/i,
+      /(notify|inform)\s+(users|you|subscribers|customers)[^.]{0,80}(time to adjust|to adjust|advance notice)/i,
+      /give\s+(you|users)[^.]{0,40}time to adjust/i,
     ],
     baseConfidence: 85,
   },
@@ -51,6 +53,8 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
       /opt[-\s]?out/i,
       /arbitration\s+(is|remains)?\s*(optional|voluntary|non[-\s]?binding)/i,
       /(may|can)\s+(decline|reject|opt\s?out|revoke)/i,
+      /\b(right|possibility|option|ability|freedom)\b[^.]{0,60}\b(invoke|seek|initiate|elect|choose|request|pursue)\b[^.]{0,40}arbitration/i,
+      /\b(invoke|seek|initiate|elect|choose)\s+(binding\s+)?arbitration/i,
     ],
     baseConfidence: 85,
   },
@@ -97,7 +101,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     patterns: [
       /(automatic(ally)?|auto)[-]?\s?renew/i,
       /(renew|renewal)[^.]{0,60}(automatically|until (you|terminated|cancelled|canceled))/i,
-      /(subscription|membership|plan|service)[^.]{0,60}(will|shall|may)?\s*(be\s+)?(automatically\s+)?(renewed|continued)/i,
+      /(subscription|membership|plan|service)[^.]{0,60}\b(is|are|will|shall|may)\b\s+(be\s+)?(automatically\s+)?\brenewed\b/i,
       /continue[^.]{0,40}(until|unless)[^.]{0,40}cancel/i,
     ],
     negations: [
@@ -129,6 +133,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     ],
     negations: [
       /(cancel|cancellation)[^.]{0,60}(at any time\s+)?(online|in your account|from your account|with (a|one) click|self[-\s]?service|in the app)/i,
+      /written notice[^.]{0,40}(via|by)\s+e-?mail/i,
     ],
     baseConfidence: 80,
   },
@@ -171,6 +176,9 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
       /at\s+your\s+(own\s+)?(expense|cost)[^.]{0,80}(indemnify|defend)/i,
       /indemnif(y|ication)[^.]{0,120}(attorneys?['’]? ?fees|legal fees|court costs)/i,
     ],
+    negations: [
+      /indemnif\w+[^.]{0,80}\b(against|for|from)\b[^.]{0,60}\b(taxes|tax|duties|tariffs)\b/i,
+    ],
     baseConfidence: 80,
   },
 
@@ -212,11 +220,13 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     jurisdictionNote:
       'CCPA/CPRA: sale/sharing triggers opt-out and opt-in rights for minors. GDPR: requires lawful basis for disclosure.',
     patterns: [
-      /(sell|selling|sale of|rent|renting|monetiz\w+)[^.]{0,60}(personal )?(information|data)/i,
+      /\b(sell|selling|sale of|rent|renting|monetiz\w+)\b[^.]{0,60}(personal )?(information|data)/i,
       /(your|user|personal)\s+(information|data)[^.]{0,60}(may|might|can)\s+be\s+sold/i,
     ],
     negations: [
-      /do(es)?\s+not\s+sell|never\s+sell|don'?t\s+sell|not\s+for\s+sale/i,
+      /do(es)?\s+not\s+[“"']?(sell|selling|sale)|never\s+sell|don'?t\s+sell|not\s+for\s+sale/i,
+      /\b(may|must|shall|will|can|could|should)\s+not\b[^.]{0,140}\b(sell|selling|sale|rent|monetiz)/i,
+      /\bnot\b[^.]{0,60}\b(sell|selling|sale|rent|monetiz)/i,
     ],
     baseConfidence: 80,
   },
@@ -234,7 +244,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     jurisdictionNote:
       'GDPR Art. 5(1)(e) requires storage limitation with defined periods; vagueness is a compliance signal.',
     patterns: [
-      /retain[^.]{0,80}(as long as|as needed|we deem|necessary|permitted)/i,
+      /retain[^.]{0,40}\b(data|information)\b[^.]{0,60}(as long as|as needed|we deem|necessary|permitted|indefinite)/i,
       /keep[^.]{0,80}(your )?(data|information)[^.]{0,80}(as long as (necessary|needed|permitted)|indefinite)/i,
       /for (an? )?(indefinite|unlimited|unspecified) period/i,
       /no (specific|fixed|defined) retention (period|limit)/i,
@@ -242,6 +252,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     negations: [
       /retain[^.]{0,80}(for|up to)\s+\d+\s*(day|week|month|year)/i,
       /delet\w+[^.]{0,60}(within|after)\s+\d+\s*(day|week|month|year)/i,
+      /retain[^.]{0,80}\b(as|when)\s+(necessary|required)\s+(for|to)\s+(legal|compliance|establishing|defend|exercise)/i,
     ],
     baseConfidence: 75,
   },
@@ -259,7 +270,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     patterns: [
       /(terminate|suspend|delete|deactivate|disable)[^.]{0,60}(your|the|a)\s+(?:\w+\s+)?(account|access)[^.]{0,120}(at any time|for any reason|without (prior )?notice|with or without cause)/i,
       /(reserve[sd]? the right)[^.]{0,60}(terminate|suspend|delete|deactivate)[^.]{0,120}(at any time|for any reason|without (prior )?notice)/i,
-      /(terminate|suspend|delete)[^.]{0,60}(at any time|for any reason)/i,
+      /(terminate|suspend|delete)[^.]{0,60}(your|the user['’]?s)[^.]{0,20}(account|access|membership)[^.]{0,40}(at any time|for any reason|without notice)/i,
     ],
     negations: [
       /for\s+(material\s+)?breach[^.]{0,40}(of|these)/i,
@@ -309,6 +320,7 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     negations: [
       /\b\d+[^.]{0,30}(day|week|month)[^.]{0,30}(prior to|before|in advance|notice)/i,
       /will\s+not\s+(increase|change)/i,
+      /(subject to change|may change|can change)[^.]{0,40}\b(at the end of|upon renewal|at renewal|for the next (term|renewal|billing))\b/i,
     ],
     baseConfidence: 75,
   },
@@ -324,9 +336,9 @@ const RULES_BY_CATEGORY: Record<RiskCategory, RuleDefinition> = {
     recommendation:
       'Prefer grants limited to "operating and improving the service". Watch for "perpetual", "irrevocable", "sublicensable", "exclusive", and "assign" language.',
     patterns: [
-      /(you (hereby )?(grant|assign|transfer|convey))[^.]{0,80}(us|to us|the company)[^.]{0,120}(perpetual|irrevocable|perpetuity|exclusive|sublicensable|ownership|all right,? title,? (and|&) interest)/i,
-      /(assign|transfer)[^.]{0,40}(all\s+)?(right|title|interest)[^.]{0,60}(to us|in (your|the) content)/i,
-      /(perpetual|irrevocable|sublicensable|exclusive)[^.]{0,40}(license|right)[^.]{0,60}(your content|user content|your (posts|submissions|materials))/i,
+      /\b(you (hereby )?(grant|assign|transfer|convey))\b[^.]{0,80}\b(us|to us|the company)\b[^.]{0,120}(perpetual|irrevocable|perpetuity|\bexclusive\b|sublicensable|ownership|all right,? title,? (and|&) interest)/i,
+      /\b(assign|transfer)\b[^.]{0,40}(all\s+)?\b(right|title|interest)\b[^.]{0,60}\b(to us|in (your|the) content)\b/i,
+      /\b(perpetual|irrevocable|sublicensable|exclusive)\b[^.]{0,40}\b(license|rights?)\b[^.]{0,120}(contributed content|your content|user content|content you (contribute|post|submit)|your (posts|submissions|materials))/i,
       /(your content|user content)[^.]{0,60}(becomes?|shall become|shall be)[^.]{0,40}(our|the company['’]?s)?\s*(sole\s+)?(property|exclusive)/i,
     ],
     negations: [
