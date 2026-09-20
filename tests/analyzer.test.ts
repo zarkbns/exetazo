@@ -193,7 +193,10 @@ describe('semantic AI layer (merge + degradation)', () => {
     const aiFinding = report.findings.find((f) => f.category === 'difficult-cancellation')!;
     expect(aiFinding.confidence).toBe(55);
     expect(aiFinding.evidence).toBe(CLOUDFLARE_RENEWAL);
-    expect(report.score).toBe(30);
+    // Advisory: it appears in the report, but the score stays rules-only.
+    expect(aiFinding.source).toBe('ai');
+    expect(aiFinding.scoreAffecting).toBe(false);
+    expect(report.score).toBe(40);
   });
 
   it('never duplicates a category the rules already flagged', async () => {
@@ -237,5 +240,81 @@ describe('semantic AI layer (merge + degradation)', () => {
     const aiFinding = report.findings.find((f) => f.category === 'difficult-cancellation')!;
     expect(aiFinding.evidence).toBe(cleaned.paragraphs[renewalIndex]?.text);
     expect(aiFinding.title).toBe('Difficult Cancellation');
+  });
+});
+
+describe('determinism boundary: the public score is rules-only', () => {
+  function renewalIndexIn(document: string): number {
+    return cleanText(document).paragraphs.findIndex((p) => p.text.includes('automatically renew'));
+  }
+
+  it('scores identically with and without semantic findings', async () => {
+    const without = await scan(CLOUDFLARE_RAW);
+    const withAi = await scan(
+      CLOUDFLARE_RAW,
+      fakeAi([{ paragraphIndex: renewalIndexIn(CLOUDFLARE_RAW), category: 'difficult-cancellation' }]),
+    );
+    expect(withAi.score).toBe(without.score);
+    expect(withAi.counts).toEqual(without.counts);
+    expect(withAi.riskLevel).toBe(without.riskLevel);
+    // The advisory finding is still reported — it just does not score.
+    expect(withAi.findings).toHaveLength(without.findings.length + 1);
+  });
+
+  it('scores identically for any set of AI candidates', async () => {
+    const idx = renewalIndexIn(CLOUDFLARE_RAW);
+    const one = await scan(
+      CLOUDFLARE_RAW,
+      fakeAi([{ paragraphIndex: idx, category: 'difficult-cancellation' }]),
+    );
+    const many = await scan(
+      CLOUDFLARE_RAW,
+      fakeAi([
+        { paragraphIndex: idx, category: 'difficult-cancellation' },
+        { paragraphIndex: 0, category: 'data-retention-ambiguity' },
+        { paragraphIndex: 1, category: 'broad-data-sharing' },
+      ]),
+    );
+    expect(many.score).toBe(one.score);
+    expect(many.counts).toEqual(one.counts);
+  });
+
+  it('ignores free-form prose a model returns alongside its candidates', async () => {
+    const rulesOnly = await scan(CLOUDFLARE_RAW);
+
+    // A model trying to set its own severity, score, and evidence.
+    const proseHeavy: SemanticAnalyzer = {
+      detectParagraphs: async () =>
+        [
+          {
+            paragraphIndex: renewalIndexIn(CLOUDFLARE_RAW),
+            category: 'difficult-cancellation',
+            explanation: 'The model claims this is the worst clause in the document.',
+            severity: 'critical',
+            score: 0,
+            evidence: 'FABRICATED EVIDENCE THE MODEL INVENTED',
+          },
+        ] as unknown as AiCandidate[],
+    };
+
+    const report = await scan(CLOUDFLARE_RAW, proseHeavy);
+    expect(report.score).toBe(rulesOnly.score);
+    expect(report.counts).toEqual(rulesOnly.counts);
+
+    const advisory = report.findings.find((f) => f.category === 'difficult-cancellation')!;
+    expect(advisory.severity).toBe('high'); // the rule catalog's severity, not the model's
+    expect(advisory.evidence).toBe(CLOUDFLARE_RENEWAL); // real document text, never the model's string
+    expect(advisory.evidence).not.toContain('FABRICATED');
+  });
+
+  it('marks exactly the rules findings as score-affecting', async () => {
+    const report = await scan(
+      CLOUDFLARE_RAW,
+      fakeAi([{ paragraphIndex: renewalIndexIn(CLOUDFLARE_RAW), category: 'difficult-cancellation' }]),
+    );
+    for (const finding of report.findings) {
+      expect(finding.scoreAffecting).toBe(finding.source === 'rules');
+    }
+    expect(report.findings.some((f) => f.source === 'ai')).toBe(true);
   });
 });

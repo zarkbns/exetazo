@@ -14,7 +14,14 @@ function makeFinding(severity: Severity, id?: string, category: RiskCategory = '
     explanation: 'test',
     recommendation: 'test',
     confidence: 80,
+    source: 'rules',
+    scoreAffecting: true,
   };
+}
+
+/** A semantic (AI) finding: present in the report, never counted in the score. */
+function makeAdvisory(severity: Severity, id: string): Finding {
+  return { ...makeFinding(severity, id), source: 'ai', scoreAffecting: false };
 }
 
 describe('deterministic scoring', () => {
@@ -69,6 +76,25 @@ describe('deterministic scoring', () => {
     for (let i = 0; i < 5; i += 1) {
       expect(scoreFindings(findings)).toEqual(first);
     }
+  });
+
+  it('ignores advisory (semantic) findings entirely — they cannot move the score', () => {
+    const scored = [makeFinding('critical', 'rules-1')];
+    const withAdvisory = [
+      ...scored,
+      makeAdvisory('critical', 'ai-1'),
+      makeAdvisory('high', 'ai-2'),
+      makeAdvisory('medium', 'ai-3'),
+    ];
+    expect(scoreFindings(withAdvisory)).toEqual(scoreFindings(scored));
+    expect(scoreFindings(withAdvisory).counts).toEqual({ critical: 1, high: 0, medium: 0, low: 0 });
+  });
+
+  it('produces identical results for the same findings in any order', () => {
+    const a = [makeFinding('high', 'x', 'broad-indemnification'), makeFinding('medium', 'y', 'hidden-fees')];
+    const b = [makeFinding('medium', 'y', 'hidden-fees'), makeFinding('high', 'x', 'broad-indemnification')];
+    expect(scoreFindings(a)).toEqual(scoreFindings(b));
+    expect(scoreFindings(a).score).toBe(85);
   });
 
   it('maps score bands to risk levels at the boundaries', () => {

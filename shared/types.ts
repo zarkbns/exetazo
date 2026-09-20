@@ -10,6 +10,12 @@ export type Severity = 'critical' | 'high' | 'medium' | 'low';
 
 export type RiskLevel = 'low' | 'moderate' | 'high' | 'critical';
 
+/**
+ * Where a finding came from. The public score only ever counts 'rules'
+ * findings, so a semantic proposal can never change a document's score.
+ */
+export type FindingSource = 'rules' | 'ai';
+
 export const RISK_CATEGORIES = [
   'unilateral-modification',
   'mandatory-arbitration',
@@ -54,6 +60,14 @@ export interface Finding {
   recommendation: string;
   /** 0–100 detection confidence. Display only — never feeds the score. */
   confidence: number;
+  /** Which layer detected it: the rules engine, or the semantic layer. */
+  source: FindingSource;
+  /**
+   * Whether this finding contributes to the score. True for every rules
+   * finding, false for AI-only findings: the score is public and must be
+   * reproducible, so semantic proposals are advisory context.
+   */
+  scoreAffecting: boolean;
 }
 
 export interface SeverityCounts {

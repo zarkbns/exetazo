@@ -36,6 +36,8 @@ function toFinding(rule: RuleDefinition, paragraph: ParagraphInput): Finding {
     explanation: rule.rationale,
     recommendation: rule.recommendation,
     confidence: rule.baseConfidence,
+    source: 'rules',
+    scoreAffecting: true,
   };
 }
 

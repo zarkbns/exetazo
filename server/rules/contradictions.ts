@@ -111,6 +111,8 @@ export function detectContradictions(paragraphs: readonly ParagraphInput[]): Fin
       explanation: `This document states: "${quote(assertionParagraph.text)}" — but elsewhere: "${quote(evidence)}". ${check.summary.charAt(0).toUpperCase()}${check.summary.slice(1)}. ${rule.rationale}`,
       recommendation: rule.recommendation,
       confidence: rule.baseConfidence,
+      source: 'rules',
+      scoreAffecting: true,
     });
   }
 

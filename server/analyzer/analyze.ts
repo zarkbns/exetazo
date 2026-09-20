@@ -12,6 +12,11 @@ import { SemanticAnalyzer, AiCandidate } from '../llm/types';
  * the cleaned text (evidence is always built from real document text) and
  * merged under rules-engine constraints (one finding per category, dedupe
  * by normalized evidence).
+ *
+ * Determinism boundary: only rules findings are score-affecting. Semantic
+ * candidates are merged as advisory findings (source: 'ai',
+ * scoreAffecting: false), so a model can add context but can never change a
+ * document's score — identical pages always produce identical scores.
  */
 
 export class NotLegalTextError extends Error {
@@ -121,6 +126,8 @@ function mergeAiCandidates(
       explanation: rule.rationale,
       recommendation: rule.recommendation,
       confidence: AI_ONLY_CONFIDENCE,
+      source: 'ai',
+      scoreAffecting: false,
     });
   }
 

@@ -47,7 +47,11 @@ export interface ScoreResult {
 }
 
 /**
- * Score a set of findings. Duplicate finding IDs are counted once — a
+ * Score a set of findings.
+ *
+ * Only score-affecting findings count: the deterministic rules engine decides
+ * what a document's score is, and semantic (AI) findings are advisory context
+ * that can never move it. Duplicate finding IDs are counted once — a
  * defensive second layer against double-counting the same underlying issue.
  */
 export function scoreFindings(findings: readonly Finding[]): ScoreResult {
@@ -56,6 +60,7 @@ export function scoreFindings(findings: readonly Finding[]): ScoreResult {
   let penalty = 0;
 
   for (const finding of findings) {
+    if (!finding.scoreAffecting) continue;
     if (seen.has(finding.id)) continue;
     seen.add(finding.id);
     counts[finding.severity] += 1;

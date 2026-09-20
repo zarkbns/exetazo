@@ -154,7 +154,15 @@ function renderFinding(finding: Finding): HTMLElement {
       });
   });
 
-  body.append(why, whyText, ev, quote, rec, recText, confidence, highlight);
+  body.append(why, whyText, ev, quote, rec, recText, confidence);
+  if (!finding.scoreAffecting) {
+    const advisory = document.createElement('div');
+    advisory.className = 'advisory';
+    advisory.textContent =
+      'Semantic detection — shown for context only. The score counts rule-verified findings.';
+    body.append(advisory);
+  }
+  body.append(highlight);
   details.append(summary, body);
   return details;
 }
