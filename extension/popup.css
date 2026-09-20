@@ -27,7 +27,21 @@ body {
 
 .brand {
   display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex: none;
+}
+
+.brand-text {
+  display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .logo {
