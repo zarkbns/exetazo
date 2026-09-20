@@ -23,6 +23,8 @@ export interface ContradictionCheck {
   conflicting: RegExp;
   /** If the promise paragraph matches any of these, the pair is reconciled — skip. */
   assertionGuards?: RegExp[];
+  /** If the conflicting clause matches any of these, it is qualified by consent or law — skip. */
+  conflictingGuards?: RegExp[];
   /** Short description inserted between the two quoted assertions. */
   summary: string;
 }
@@ -37,17 +39,25 @@ export const CONTRADICTION_CHECKS: readonly ContradictionCheck[] = [
   },
   {
     id: 'no-sale-vs-sale-grant',
-    assertion: /(do(es)?\s+not|never|don'?t)\s+sell[^.]{0,60}(personal )?(information|data)/i,
+    assertion: /\b(we|the company|the service)\s+(do(es)?\s+not|never|don'?t)\s+sell[^.]{0,60}(personal )?(information|data)/i,
     conflicting: /(may|will|can|reserve[sd]? the right to)\s+(sell|rent|monetiz\w*)[^.]{0,60}(personal )?(information|data)/i,
-    assertionGuards: [/except|other than|aside from|as described|as set forth|as stated|as outlined/i],
+    assertionGuards: [
+      /except|other than|aside from|as described|as set forth|as stated|as outlined/i,
+      /opt[-\s]?out|click (on|here)|link (on|in)|footer|exercise your (rights|preferences)/i,
+    ],
+    conflictingGuards: [/with your consent|where allowed|as permitted|as required by law|when required|to the extent/i],
     summary: 'the document promises not to sell your data, but also grants itself permission to sell it',
   },
   {
     id: 'no-share-vs-share-grant',
-    assertion: /(do(es)?\s+not|never|don'?t)\s+(share|disclose|transfer|give|provide)[^.]{0,80}(personal )?(information|data)/i,
+    assertion: /\b(we|the company|the service)\s+(do(es)?\s+not|never|don'?t)\s+(share|disclose|transfer|give|provide)[^.]{0,80}(personal )?(information|data)/i,
     conflicting:
       /(may|will|can)\s+(share|disclose|transfer|provide)[^.]{0,60}(with|to)[^.]{0,40}(third part|affiliates|partners|advertisers|marketing)/i,
-    assertionGuards: [/except|other than|aside from|as described|as set forth|as stated|as outlined|only as/i],
+    assertionGuards: [
+      /except|other than|aside from|as described|as set forth|as stated|as outlined|only as/i,
+      /opt[-\s]?out|click (on|here)|link (on|in)|footer|exercise your (rights|preferences)/i,
+    ],
+    conflictingGuards: [/with your consent|where allowed|as permitted|as required by law|when required|to the extent/i],
     summary: 'the document promises not to share your data, but also permits sharing it with third parties',
   },
   {
@@ -78,7 +88,11 @@ export function detectContradictions(paragraphs: readonly ParagraphInput[]): Fin
     );
     if (!assertionParagraph) continue;
 
-    const conflictingParagraph = paragraphs.find((p) => check.conflicting.test(p.text));
+    const conflictingParagraph = paragraphs.find(
+      (p) =>
+        check.conflicting.test(p.text) &&
+        !(check.conflictingGuards ?? []).some((guard) => guard.test(p.text)),
+    );
     if (!conflictingParagraph || conflictingParagraph === assertionParagraph) continue;
 
     const evidence = conflictingParagraph.text.trim();
