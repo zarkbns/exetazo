@@ -54,9 +54,9 @@ function ensureHighlightStyles(): void {
   const style = document.createElement('style');
   style.id = 'exetazo-styles';
   style.textContent = [
-    'mark[data-exetazo] { background: #fbbf24; color: #1c1917; outline: 3px solid #f59e0b;',
+    'mark[data-exetazo] { background: #f1ff52; color: #191919; outline: 3px solid #ab9ff2;',
     '  outline-offset: 2px; border-radius: 2px; transition: background 1.4s ease; }',
-    'mark[data-exetazo].settled { background: #fde68a; outline-width: 2px; }',
+    'mark[data-exetazo].settled { background: #e2dffe; outline-width: 2px; }',
   ].join(' ');
   document.head.appendChild(style);
 }
