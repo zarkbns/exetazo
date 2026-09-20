@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exetazo — Legal security before you agree</title>
+  <meta name="description" content="Exetazo is a Chrome extension that scans terms of service, privacy policies, and subscription agreements for risky clauses — with deterministic scoring and evidence on every finding. Not legal advice." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Floating pill nav -->
+  <div class="nav-wrap">
+    <nav class="nav" aria-label="Main">
+      <a href="#" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="M15.5 15.5 L21 21" />
+          </svg>
+        </span>
+        <span class="brand-name">exetazo</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#categories">Risk categories</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#disclaimer">Disclaimer</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://github.com/zarkbns/exetazo" target="_blank" rel="noopener" class="nav-gh">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://github.com/zarkbns/exetazo#readme" class="btn btn-nav">Get the extension</a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero container">
+    <a href="#how" class="announce">
+      <strong>Deterministic scoring</strong>
+      <span class="arrow">→</span>
+      <span>same page, same score, every time</span>
+    </a>
+
+    <h1>Legal security <span class="accent">before</span> you agree.</h1>
+
+    <p class="sub">
+      Exetazo is a Chrome extension that scans terms of service, privacy policies, and
+      subscription agreements for risky clauses — before you click accept. Every finding
+      points to the exact text that triggered it.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="https://github.com/zarkbns/exetazo#readme" class="btn btn-lime">
+        Get the extension
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M14 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+
+    <!-- Sample report, rendered the way the extension renders real scans -->
+    <div class="report-demo" role="img" aria-label="Sample Exetazo report showing a score of 42 out of 100, high risk">
+      <div class="report-head">
+        <div class="report-score">
+          <span class="num">42</span>
+          <span class="of">/ 100</span>
+        </div>
+        <span class="level-badge">HIGH RISK</span>
+      </div>
+
+      <div class="report-counts">
+        <span class="count-chip"><strong>4</strong> Critical</span>
+        <span class="count-chip"><strong>3</strong> High</span>
+        <span class="count-chip"><strong>3</strong> Medium</span>
+        <span class="count-chip"><strong>2</strong> Low</span>
+      </div>
+
+      <div class="finding-sample">
+        <div class="finding-title">
+          <span class="sev-dot" aria-hidden="true"></span>
+          Unilateral Modification
+          <span class="sev-label">CRITICAL</span>
+        </div>
+        <blockquote class="evidence">
+          "We reserve the right to modify these terms at any time, without notice…"
+        </blockquote>
+      </div>
+
+      <p class="report-note">Sample report — the extension renders real scans from deterministic rules, not AI opinions.</p>
+    </div>
+  </header>
+
+  <!-- How it works -->
+  <section class="section container" id="how">
+    <div class="section-head">
+      <span class="section-kicker">How it works</span>
+      <h2>A security audit, in four steps.</h2>
+      <p>No chatbot, no summary to trust on faith. A rule-based scanner that shows its work.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Open any legal page</h3>
+        <p>Terms of service, privacy policies, subscription agreements — the fine print everywhere.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Hit Scan</h3>
+        <p>The extension extracts the page's legal text, strips navigation and cookie noise, and analyzes it in seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Read the report</h3>
+        <p>A security-style score out of 100 with severity-ranked findings — critical clauses first.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>See the clause</h3>
+        <p>Click a finding and the exact clause highlights on the page, with why it matters and what to watch for.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Risk categories accordion -->
+  <section class="section container" id="categories">
+    <div class="section-head">
+      <span class="section-kicker">Laws &amp; rules</span>
+      <h2>15 clause types it watches for.</h2>
+      <p>Every category has an explicit definition and severity logic — no black boxes. Open one to see what it means.</p>
+    </div>
+
+    <div class="accordion">
+
+      <div class="cat open">
+        <button class="cat-head" aria-expanded="true">
+          <span class="cat-num">01</span>
+          <span class="cat-title">Unilateral Modification</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>The company can change the terms at any time — without asking you, and sometimes without telling you. Whatever you agreed to can become something else entirely.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">02</span>
+          <span class="cat-title">Mandatory Arbitration</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>You give up the right to sue in court. Disputes go to a private arbitrator chosen under rules the company picked.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">03</span>
+          <span class="cat-title">Class-Action Waiver</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>You can't join a class lawsuit. If the company harms thousands of people a little each, no one can pool their claims.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">04</span>
+          <span class="cat-title">Automatic Renewal</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>Your subscription renews on its own, without a clear reminder — and the clock on any refund window keeps running.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">05</span>
+          <span class="cat-title">Difficult Cancellation</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>Cancelling requires a phone call, a mailed letter, or a maze of steps — while signing up took one click.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">06</span>
+          <span class="cat-title">Broad Liability Limitation</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>The company limits what it owes you when things go wrong — capping damages or disclaiming warranties in sweeping terms.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">07</span>
+          <span class="cat-title">Broad Indemnification</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>You agree to cover the company's legal costs — even for disputes that aren't your fault.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">08</span>
+          <span class="cat-title">Broad Data Sharing</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>Your data can be shared with a long list of third parties — affiliates, partners, "service providers" — under vague purposes.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">09</span>
+          <span class="cat-title">Data Sale Permissions</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>The terms explicitly allow selling your personal information, or treat "sharing" and "selling" as the same thing.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">10</span>
+          <span class="cat-title">Data Retention Ambiguity</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>It's unclear how long your data is kept — or deletion only applies to some of it, "where required by law".</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">11</span>
+          <span class="cat-title">Account Termination Rights</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>The company can suspend or delete your account for vague reasons — "harmful conduct", "any reason" — with no appeal.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">12</span>
+          <span class="cat-title">Forced Venue / Jurisdiction</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>Disputes must be fought in a specific court or location — often one far from you and convenient for the company.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">13</span>
+          <span class="cat-title">Hidden Fees / Pricing Changes</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>Unclear pricing, surprise charges, or the right to change prices mid-subscription with minimal notice.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">14</span>
+          <span class="cat-title">Broad IP / Content Ownership</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>The company claims broad rights over your content — a license so wide it can outlive your account, or read like ownership.</p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <button class="cat-head" aria-expanded="false">
+          <span class="cat-num">15</span>
+          <span class="cat-title">Contradictory Clauses</span>
+          <span class="cat-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+        </button>
+        <div class="cat-panel">
+          <p>The document promises one thing in one section and takes it back in another. Exetazo cross-checks sections to catch the contradiction.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Why deterministic -->
+  <section class="section container" id="why">
+    <div class="section-head">
+      <span class="section-kicker">Why Exetazo</span>
+      <h2>Audit-grade by design.</h2>
+      <p>Borrowed from smart-contract security: deterministic rules, quoted evidence, reproducible results.</p>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><path d="M17 13l3 3-3 3" stroke-width="2"/></svg>
+        </div>
+        <h3>Evidence over claims</h3>
+        <p>Every finding quotes the exact clause text and where it sits in the document. Nothing is flagged without a source you can check yourself.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        </div>
+        <h3>Rules, not vibes</h3>
+        <p>Severity comes from a rules engine, not AI confidence. Scan the same document twice and you get the same score — that's the point.</p>
+        <span class="formula">100 − 20·critical − 10·high − 5·medium − 2·low</span>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h3>Nothing kept</h3>
+        <p>Page text is analyzed and discarded. No documents stored, no accounts, no tracking. Credentials only ever live server-side.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section class="section container" id="privacy">
+    <div class="privacy">
+      <h2>Built private by default.</h2>
+      <div class="privacy-facts">
+        <div class="fact">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+          No accounts, no sign-up
+        </div>
+        <div class="fact">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+          Full documents never stored
+        </div>
+        <div class="fact">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+          Secrets server-side only — never in the extension
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Try it on -->
+  <div class="try-strip">
+    <div class="container try-inner">
+      <span class="try-label">Works on real pages</span>
+      <div class="try-logos">
+        <span>Notion</span>
+        <span>Stripe</span>
+        <span>GitHub</span>
+        <span>AWS</span>
+        <span>Figma</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <section class="section container" id="disclaimer">
+    <div class="disclaimer-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      <p><strong>Exetazo is not legal advice.</strong> It flags <em>potential</em> risks for human review — it does not create an attorney-client relationship, does not guarantee a clause is legal or illegal, and is not a substitute for a lawyer. Jurisdiction, context, and specific wording all matter. For important agreements, consult a lawyer.</p>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section container">
+    <div class="final-cta">
+      <h2>Stop agreeing to what you haven't read.</h2>
+      <p>Free, open source, and private by default. Load it in Chrome and scan your next agreement.</p>
+      <a href="https://github.com/zarkbns/exetazo#readme" class="btn btn-lime">
+        Get the extension
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M14 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <span>Exetazo — legal security before you agree. Not legal advice. MIT license.</span>
+      <div class="footer-links">
+        <a href="#how">How it works</a>
+        <a href="#categories">Risk categories</a>
+        <a href="https://github.com/zarkbns/exetazo" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <span>Built for LexHack 2026</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var cards = document.querySelectorAll('.cat');
+      cards.forEach(function (card) {
+        var head = card.querySelector('.cat-head');
+        head.addEventListener('click', function () {
+          var isOpen = card.classList.contains('open');
+          cards.forEach(function (other) {
+            other.classList.remove('open');
+            other.querySelector('.cat-head').setAttribute('aria-expanded', 'false');
+          });
+          if (!isOpen) {
+            card.classList.add('open');
+            head.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
