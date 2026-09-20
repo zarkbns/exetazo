@@ -11,6 +11,7 @@
     "build:server": "tsc -p server/tsconfig.json",
     "build:extension": "webpack --config extension/webpack.config.cjs && node scripts/copy-extension-assets.cjs",
     "start:server": "node dist/server/api/main.js",
+    "validate:pages": "node scripts/validate-real-pages.cjs",
     "test": "jest",
     "test:watch": "jest --watch"
   },
