@@ -134,6 +134,23 @@ port (default 8787).
 3. Start the API: `npm run start:server` (the dev build calls `http://127.0.0.1:8787`)
 4. Open any terms page, click the Exetazo icon, press **Scan**
 
+### Firefox
+
+One build emits both browser targets from one source — `extension/dist` (Chrome)
+and `extension/dist-firefox`. The Firefox variant swaps the service worker for an
+event page, uses Firefox's native `sidebar_action` instead of the Chrome side
+panel (the **same** `sidepanel.html` renders — no duplicate UI), and carries the
+gecko settings needed for addons.mozilla.org (`exetazo@exetazo.xyz`, data-collection
+disclosure: website content sent to the API for transient analysis).
+
+1. `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** → select `extension/dist-firefox/manifest.json`
+2. Start the API (`npm run start:server`) and open a terms page
+3. Click the Exetazo icon → **Scan** — the sidebar opens with the same report; clicking a finding highlights the clause on the page
+
+`npx web-ext lint --source-dir extension/dist-firefox` passes with zero errors,
+warnings, and notices. For a production build, set `EXETAZO_API_ORIGIN` as below —
+both targets get the narrowed `host_permissions`.
+
 ---
 
 ## Production configuration
