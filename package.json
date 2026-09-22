@@ -10,6 +10,7 @@
   "scripts": {
     "build:server": "tsc -p server/tsconfig.json",
     "build:extension": "webpack --config extension/webpack.config.cjs && node scripts/copy-extension-assets.cjs",
+    "package:firefox": "npx --yes web-ext@latest build --source-dir extension/dist-firefox --artifacts-dir web-ext-artifacts",
     "start:server": "node dist/server/api/main.js",
     "validate:pages": "node scripts/validate-real-pages.cjs",
     "test": "jest",

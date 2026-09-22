@@ -8,3 +8,4 @@ coverage/
 .DS_Store
 extension/dist/
 extension/dist-firefox/
+web-ext-artifacts/
