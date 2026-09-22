@@ -42,7 +42,7 @@ export interface LastScan {
 export type ExetazoMessage =
   | { type: 'EXETAZO_SCAN' }
   | { type: 'EXETAZO_EXTRACT' }
-  | { type: 'EXETAZO_HIGHLIGHT'; evidence: string }
+  | { type: 'EXETAZO_HIGHLIGHT'; evidence: string; section?: string }
   | { type: 'EXETAZO_GET_LAST_SCAN' };
 
 export type ExetazoResponse =

@@ -85,36 +85,45 @@ async function scanActiveTab(): Promise<ScanOutcome & { lastScan?: LastScan }> {
   return { ...outcome, lastScan };
 }
 
-async function highlightInActiveTab(evidence: string): Promise<{ ok: boolean; found?: boolean }> {
+async function highlightInActiveTab(
+  evidence: string,
+  section?: string,
+): Promise<{ ok: boolean; found?: boolean }> {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id) return { ok: false };
   try {
-    const response = await chrome.tabs.sendMessage(tab.id, { type: 'EXETAZO_HIGHLIGHT', evidence });
+    const response = await chrome.tabs.sendMessage(tab.id, {
+      type: 'EXETAZO_HIGHLIGHT',
+      evidence,
+      ...(section ? { section } : {}),
+    });
     return { ok: true, found: Boolean(response?.found) };
   } catch {
     return { ok: false, found: false };
   }
 }
 
-chrome.runtime.onMessage.addListener((message: { type?: string; evidence?: string }, _sender, sendResponse) => {
-  if (message?.type === 'EXETAZO_SCAN') {
-    scanActiveTab()
-      .then((outcome) => sendResponse(outcome))
-      .catch((err: unknown) => sendResponse({ ok: false, error: String(err) }));
-    return true;
-  }
-  if (message?.type === 'EXETAZO_HIGHLIGHT') {
-    highlightInActiveTab(message.evidence ?? '')
-      .then((result) => sendResponse(result))
-      .catch(() => sendResponse({ ok: false, found: false }));
-    return true;
-  }
-  if (message?.type === 'EXETAZO_GET_LAST_SCAN') {
-    chrome.storage.session
-      .get('lastScan')
-      .then((data) => sendResponse({ ok: true, lastScan: (data.lastScan as LastScan) ?? null }))
-      .catch(() => sendResponse({ ok: false, error: 'Storage unavailable' }));
-    return true;
-  }
-  return undefined;
-});
+chrome.runtime.onMessage.addListener(
+  (message: { type?: string; evidence?: string; section?: string }, _sender, sendResponse) => {
+    if (message?.type === 'EXETAZO_SCAN') {
+      scanActiveTab()
+        .then((outcome) => sendResponse(outcome))
+        .catch((err: unknown) => sendResponse({ ok: false, error: String(err) }));
+      return true;
+    }
+    if (message?.type === 'EXETAZO_HIGHLIGHT') {
+      highlightInActiveTab(message.evidence ?? '', message.section)
+        .then((result) => sendResponse(result))
+        .catch(() => sendResponse({ ok: false, found: false }));
+      return true;
+    }
+    if (message?.type === 'EXETAZO_GET_LAST_SCAN') {
+      chrome.storage.session
+        .get('lastScan')
+        .then((data) => sendResponse({ ok: true, lastScan: (data.lastScan as LastScan) ?? null }))
+        .catch(() => sendResponse({ ok: false, error: 'Storage unavailable' }));
+      return true;
+    }
+    return undefined;
+  },
+);

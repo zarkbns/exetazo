@@ -101,20 +101,65 @@ function wrapRawText(textNode: Text, start: number, end: number): boolean {
   }
 }
 
-export function highlightEvidence(evidence: string): boolean {
+/**
+ * Nearest preceding heading text for a block. Used to anchor a highlight to the
+ * section the finding was reported from when the same clause appears more than
+ * once on the page.
+ */
+function sectionFor(el: Element): string {
+  let node: Element | null = el;
+  while (node) {
+    let sibling: Element | null = node.previousElementSibling;
+    while (sibling) {
+      const heading = sibling.matches('h1,h2,h3,h4,h5,h6')
+        ? sibling
+        : sibling.querySelector('h1,h2,h3,h4,h5,h6');
+      const text = (heading?.textContent ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+      if (text) return text;
+      sibling = sibling.previousElementSibling;
+    }
+    node = node.parentElement;
+  }
+  return '';
+}
+
+function inSection(el: Element, section: string): boolean {
+  const wanted = section.replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!wanted) return false;
+  const own = sectionFor(el);
+  if (!own) return false;
+  return own === wanted || own.includes(wanted) || wanted.includes(own);
+}
+
+export function highlightEvidence(evidence: string, section?: string): boolean {
   clearHighlights();
   const needle = evidence.replace(/\s+/g, ' ').trim().toLowerCase();
   if (needle.length < 8) return false;
 
   const blocks = Array.from(document.querySelectorAll(BLOCK_SELECTOR)) as HTMLElement[];
+  const candidates: HTMLElement[] = [];
   for (const el of blocks) {
     if (el.querySelector(BLOCK_SELECTOR)) continue;
     if (el.closest('mark[data-exetazo]')) continue;
     const text = (el.textContent ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
     if (text === needle || (needle.length >= 60 && text.includes(needle))) {
-      wrapBlock(el);
+      candidates.push(el);
+    }
+  }
+
+  // Prefer the occurrence in the section the finding came from; the same clause
+  // can legitimately appear in several places on one page.
+  if (section) {
+    const anchored = candidates.find((el) => inSection(el, section));
+    if (anchored) {
+      wrapBlock(anchored);
       return true;
     }
+  }
+  const [first] = candidates;
+  if (first) {
+    wrapBlock(first);
+    return true;
   }
 
   // best-effort fallback: raw prefix search within a single text node
@@ -133,15 +178,17 @@ export function highlightEvidence(evidence: string): boolean {
   return false;
 }
 
-chrome.runtime.onMessage.addListener((message: { type?: string; evidence?: string }, _sender, sendResponse) => {
-  if (message?.type === 'EXETAZO_EXTRACT') {
-    const { text, title, url } = extractLegalText();
-    sendResponse({ ok: true, text, title, url });
+chrome.runtime.onMessage.addListener(
+  (message: { type?: string; evidence?: string; section?: string }, _sender, sendResponse) => {
+    if (message?.type === 'EXETAZO_EXTRACT') {
+      const { text, title, url } = extractLegalText();
+      sendResponse({ ok: true, text, title, url });
+      return undefined;
+    }
+    if (message?.type === 'EXETAZO_HIGHLIGHT') {
+      sendResponse({ ok: true, found: highlightEvidence(message.evidence ?? '', message.section) });
+      return undefined;
+    }
     return undefined;
-  }
-  if (message?.type === 'EXETAZO_HIGHLIGHT') {
-    sendResponse({ ok: true, found: highlightEvidence(message.evidence ?? '') });
-    return undefined;
-  }
-  return undefined;
-});
+  },
+);

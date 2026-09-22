@@ -139,7 +139,11 @@ function renderFinding(finding: Finding): HTMLElement {
   highlight.addEventListener('click', () => {
     highlight.disabled = true;
     chrome.runtime
-      .sendMessage({ type: 'EXETAZO_HIGHLIGHT', evidence: finding.evidence })
+      .sendMessage({
+        type: 'EXETAZO_HIGHLIGHT',
+        evidence: finding.evidence,
+        ...(finding.location.section ? { section: finding.location.section } : {}),
+      })
       .then((response: { ok?: boolean; found?: boolean } | undefined) => {
         highlight.textContent = response?.found ? 'Highlighted ✓' : 'Not found on page';
       })
