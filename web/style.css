@@ -49,7 +49,8 @@ a {
   width: 100%;
   max-width: 1080px;
   margin: 0 auto;
-  padding: 0 20px;
+  /* Grows toward the edges on small screens so text never hugs the bezel */
+  padding: 0 clamp(20px, 5.5vw, 32px);
 }
 
 /* ---------- Floating pill nav ---------- */
@@ -62,7 +63,7 @@ a {
   z-index: 50;
   display: flex;
   justify-content: center;
-  padding: 14px 16px 0;
+  padding: 14px clamp(12px, 3vw, 16px) 0;
 }
 
 .nav {
@@ -225,7 +226,10 @@ a {
 .announce {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  max-width: 100%;
   background: rgba(226, 223, 254, 0.55);
   border: 1px solid rgba(171, 159, 242, 0.45);
   border-radius: 999px;
@@ -910,6 +914,19 @@ footer {
 }
 
 @media (max-width: 560px) {
+  .hero {
+    /* Less dead space under the pill nav, more room for content */
+    padding-top: 128px;
+  }
+
+  .section {
+    padding: 56px 0;
+  }
+
+  .hero .sub {
+    padding: 0 4px;
+  }
+
   .steps {
     grid-template-columns: 1fr;
   }
@@ -923,15 +940,32 @@ footer {
   }
 
   .report-demo {
-    padding: 20px 18px 16px;
+    padding: 22px 24px 18px;
+  }
+
+  .report-legend {
+    padding-top: 16px;
   }
 
   .privacy {
-    padding: 30px 24px;
+    padding: 30px 26px;
+  }
+
+  .disclaimer-box {
+    padding: 22px 24px;
+  }
+
+  .not-item {
+    padding: 20px 22px;
   }
 
   .final-cta {
-    padding: 40px 24px;
+    padding: 42px 26px;
+  }
+
+  .try-inner {
+    justify-content: center;
+    text-align: center;
   }
 }
 
