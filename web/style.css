@@ -9,6 +9,7 @@
   --line: rgba(60, 49, 91, 0.14);
   --radius-card: 20px;
   --font: 'Base Sans', 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 * {
@@ -167,6 +168,10 @@ a {
   transform: translateY(-1px);
 }
 
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
 .btn-lime {
   background: var(--lime);
   color: var(--black);
@@ -222,6 +227,45 @@ a {
   flex-direction: column;
   align-items: center;
 }
+
+/* First-paint entrance: one gentle fade-up, staggered by element */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero > * {
+  animation: fade-up 600ms var(--ease-out) both;
+}
+
+.hero > *:nth-child(2) { animation-delay: 80ms; }
+.hero > *:nth-child(3) { animation-delay: 160ms; }
+.hero > *:nth-child(4) { animation-delay: 240ms; }
+.hero > *:nth-child(5) { animation-delay: 320ms; }
+
+/* Scroll reveal: opt-in via .reveal / .reveal-stagger, applied only when JS runs */
+.js .reveal,
+.js .reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 550ms var(--ease-out), transform 550ms var(--ease-out);
+}
+
+.js .reveal.in,
+.js .reveal-stagger.in > * {
+  opacity: 1;
+  transform: none;
+}
+
+.js .reveal-stagger.in > *:nth-child(2) { transition-delay: 70ms; }
+.js .reveal-stagger.in > *:nth-child(3) { transition-delay: 140ms; }
+.js .reveal-stagger.in > *:nth-child(4) { transition-delay: 210ms; }
 
 .announce {
   display: inline-flex;
@@ -584,8 +628,25 @@ a {
 }
 
 .cat-panel {
-  display: none;
-  padding: 4px 18px 20px 70px;
+  /* Grid-rows 0fr→1fr animates the open/close without measuring heights;
+     visibility flips at transition end so closed panels stay out of the a11y tree */
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  padding: 0 18px 0 70px;
+  transition: grid-template-rows 300ms var(--ease-out), visibility 300ms;
+}
+
+.cat-panel p {
+  margin: 0;
+  padding: 4px 0 20px;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  color: rgba(255, 253, 248, 0.82);
+  font-size: 14px;
+  max-width: 640px;
 }
 
 .cat.open {
@@ -608,13 +669,12 @@ a {
 }
 
 .cat.open .cat-panel {
-  display: block;
+  grid-template-rows: 1fr;
+  visibility: visible;
 }
 
-.cat-panel p {
-  color: rgba(255, 253, 248, 0.82);
-  font-size: 14px;
-  max-width: 640px;
+.cat.open .cat-panel p {
+  opacity: 1;
 }
 
 /* ---------- Why deterministic ---------- */
@@ -977,7 +1037,20 @@ footer {
   .btn,
   .cat,
   .cat-chevron,
-  .cat-num {
+  .cat-num,
+  .cat-panel,
+  .cat-panel p {
+    transition: none;
+  }
+
+  .hero > * {
+    animation: none;
+  }
+
+  .js .reveal,
+  .js .reveal-stagger > * {
+    opacity: 1;
+    transform: none;
     transition: none;
   }
 

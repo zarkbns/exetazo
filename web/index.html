@@ -26,6 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="stylesheet" href="style.css" />
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
@@ -82,7 +83,7 @@
     <div class="report-demo" role="img" aria-label="Sample Exetazo report showing a score of 42 out of 100, high risk">
       <div class="report-head">
         <div class="report-score">
-          <span class="num">42</span>
+          <span class="num" id="demo-score">42</span>
           <span class="of">/ 100</span>
         </div>
         <span class="level-badge">HIGH RISK</span>
@@ -127,13 +128,13 @@
 
   <!-- How it works -->
   <section class="section container" id="how">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="section-kicker">How it works</span>
       <h2>Four steps, about five seconds.</h2>
       <p>No chatbot to trust on faith. A scanner that shows its work and lets you check it.</p>
     </div>
 
-    <div class="steps">
+    <div class="steps reveal-stagger">
       <div class="step">
         <div class="step-num">01</div>
         <h3>Open a terms page</h3>
@@ -159,13 +160,13 @@
 
   <!-- What it checks -->
   <section class="section container" id="categories">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="section-kicker">What it checks</span>
       <h2>15 risky clause types, in plain English.</h2>
       <p>Each one has a written definition and a fixed severity — nothing hidden. Tap a card to see what it means.</p>
     </div>
 
-    <div class="accordion">
+    <div class="accordion reveal">
 
       <div class="cat open">
         <button class="cat-head" aria-expanded="true">
@@ -337,13 +338,13 @@
 
   <!-- Why Exetazo -->
   <section class="section container" id="why">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="section-kicker">Why Exetazo</span>
       <h2>Every flag shows its receipt.</h2>
       <p>Built like a security audit: fixed rules, quoted evidence, results you can reproduce.</p>
     </div>
 
-    <div class="pillars">
+    <div class="pillars reveal-stagger">
       <div class="pillar">
         <div class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><path d="M17 13l3 3-3 3" stroke-width="2"/></svg>
@@ -371,7 +372,7 @@
 
   <!-- Privacy -->
   <section class="section container" id="privacy">
-    <div class="privacy">
+    <div class="privacy reveal">
       <h2>Private by default, because there's nothing to store.</h2>
       <div class="privacy-facts">
         <div class="fact">
@@ -421,13 +422,13 @@
 
   <!-- Not legal advice -->
   <section class="section container" id="disclaimer">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="section-kicker">The fine print on us</span>
       <h2>What Exetazo is not.</h2>
       <p>It's a tool that points things out. It doesn't tell you what the law says about them.</p>
     </div>
 
-    <div class="not-list">
+    <div class="not-list reveal-stagger">
       <div class="not-item">
         <strong>Not legal advice.</strong>
         No attorney-client relationship, no opinion on whether a clause is legal or illegal.
@@ -442,7 +443,7 @@
       </div>
     </div>
 
-    <div class="disclaimer-box">
+    <div class="disclaimer-box reveal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
       <p>For anything important — a lease, a job contract, a settlement — talk to a lawyer. Exetazo is a second pair of eyes, not a substitute for one.</p>
     </div>
@@ -450,7 +451,7 @@
 
   <!-- Final CTA -->
   <section class="section container">
-    <div class="final-cta">
+    <div class="final-cta reveal">
       <h2>Stop agreeing to what you haven't read.</h2>
       <p>Free and open source. Load it in Chrome and scan your next agreement.</p>
       <a href="https://github.com/zarkbns/exetazo#readme" class="btn btn-lime">
@@ -476,6 +477,7 @@
 
   <script>
     (function () {
+      // Accordion: one open card at a time
       var cards = document.querySelectorAll('.cat');
       cards.forEach(function (card) {
         var head = card.querySelector('.cat-head');
@@ -491,6 +493,36 @@
           }
         });
       });
+
+      // Scroll reveal: sections fade up the first time they enter the viewport
+      var revealables = document.querySelectorAll('.reveal, .reveal-stagger');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        revealables.forEach(function (el) { observer.observe(el); });
+      } else {
+        revealables.forEach(function (el) { el.classList.add('in'); });
+      }
+
+      // Sample score counts up once — the score is the product's core output
+      var scoreEl = document.getElementById('demo-score');
+      if (scoreEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var target = 42;
+        var start = performance.now();
+        var duration = 900;
+        var tick = function (now) {
+          var progress = Math.min(1, (now - start) / duration);
+          scoreEl.textContent = String(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
     })();
   </script>
 </body>
