@@ -1,4 +1,5 @@
 import { LastScan } from './messages';
+import { openReportPanel } from './panel';
 
 async function openSidePanelAndScan(): Promise<void> {
   const scanButton = document.getElementById('scan-button') as HTMLButtonElement | null;
@@ -7,10 +8,9 @@ async function openSidePanelAndScan(): Promise<void> {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (tab?.id !== undefined) {
     try {
-      await chrome.sidePanel.open({ tabId: tab.id });
-      await chrome.sidePanel.setOptions({ tabId: tab.id, path: 'sidepanel.html', enabled: true });
+      await openReportPanel(tab.id);
     } catch {
-      // side panel may already be open; the scan continues regardless
+      // no report surface in this browser; the scan still runs in the popup
     }
     await chrome.runtime.sendMessage({ type: 'EXETAZO_SCAN' });
   }
