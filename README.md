@@ -2,397 +2,234 @@
 
 > **Legal security before you agree.**
 
-Exetazo is a Chrome extension that scans legal agreements for risky clauses, unfair terms, hidden obligations, and contradictions — before you sign.
+Exetazo is a Chrome extension (Manifest V3) plus an analysis API that reads terms
+of service, privacy policies, and subscription agreements, flags risky clauses,
+and scores the document with fixed rules — the way a smart-contract audit
+reports vulnerabilities.
 
-Inspired by smart-contract security: **CertiK audits code for vulnerabilities. Exetazo audits legal text for the same.**
+- **Deterministic score** — fixed integer penalties computed by the rules engine; a model never sets the score
+- **Evidence on every finding** — the exact clause text, located in the cleaned document and highlightable on the page
+- **Not legal advice** — a risk-detection tool for human review
 
----
-
-## The Problem
-
-Most people accept Terms of Service, Privacy Policies, and subscription agreements without reading them. Those agreements often contain clauses that:
-
-- Allow unilateral changes without notice
-- Remove your right to sue (mandatory arbitration)
-- Prevent class-action lawsuits
-- Auto-renew with difficult cancellation
-- Sell or share your data broadly
-- Limit liability with vague language
-- Contain contradictions that favor the company
-
-Exetazo finds these *before* you click accept.
+Landing page: [www.exetazo.xyz](https://www.exetazo.xyz) (static, deployed on Vercel).
 
 ---
 
-## How It Works
+## How a scan works
 
-1. **Open any legal webpage** (Terms of Service, Privacy Policy, subscription agreement, etc.)
-2. **Launch Exetazo** from the Chrome toolbar
-3. **Scan** — extension analyzes the page
-4. **Review findings** — security-style report with severity levels
-5. **Click a finding** — highlights the actual problematic clause
-6. **Understand why** — explanation of the risk and recommendation
+1. **Extract** — the content script pulls block-level text from the *rendered* page and removes navigation, header/footer, cookie/consent, promotional, and layout noise. Page text is treated as untrusted data: it is never executed and never rendered as markup.
+2. **Clean** — the API normalizes the text into clause-sized paragraphs with section headings and character offsets. Pages with fewer than 60 words of legal text get an explicit `not-legal-text` answer — no findings are fabricated.
+3. **Detect (rules)** — the rules engine matches 15 category patterns plus cross-checks for self-contradicting documents, emitting findings whose severity, title, explanation, and recommendation come from the rule catalog. Every finding carries the verbatim evidence it matched.
+4. **Detect (semantic, optional)** — if configured, a model proposes paragraph-level candidates for categories the rules missed. Candidates are validated against the cleaned document (evidence is always real text, never model output) and merged as **advisory** findings.
+5. **Score** — `100 − 20·critical − 10·high − 5·medium − 2·low`, clamped to 0–100, duplicate finding IDs counted once. Risk bands: 80–100 low, 60–79 moderate, 30–59 high, 0–29 critical, lifted by severity floors (a critical finding never reads below HIGH RISK).
+6. **Report** — the side panel renders the score, counts, and findings; clicking a finding scrolls to and highlights the exact clause (section-aware anchoring, with a raw text-node fallback).
 
-```
-Real Legal Webpage
-      ↓
-Text Extraction (noise removal)
-      ↓
-Clause Detection (semantic AI)
-      ↓
-Risk Rules Engine (deterministic scoring)
-      ↓
-Security Report (42/100 HIGH RISK)
-      ↓
-Click Finding → Highlights Source Clause
-```
-
-**Report Example:**
-
-```
-EXETAZO SECURITY REPORT
-
-42 / 100
-HIGH RISK
-
-4 Critical | 3 High | 3 Medium | 2 Low
-
-CRITICAL
-• Unilateral Modification
-• Mandatory Arbitration
-• Broad Data Sharing
-• Auto-Renewal
-```
+**Determinism boundary:** only rules findings affect the score. Semantic findings
+are labelled advisory in the report — a model can add context but cannot change
+a document's score, so identical pages always produce identical scores.
 
 ---
 
-## Core Philosophy
+## What it checks — 15 categories
 
-**Exetazo is a security tool, not a chatbot.**
+1. **Unilateral Modification** — the company can change the terms anytime
+2. **Mandatory Arbitration** — you waive the right to sue in court
+3. **Class-Action Waiver** — you can't join a class lawsuit
+4. **Automatic Renewal** — subscriptions renew without a clear reminder
+5. **Difficult Cancellation** — cancelling needs calls, letters, or mazes
+6. **Broad Liability Limitation** — damages capped or disclaimed broadly
+7. **Broad Indemnification** — you cover the company's legal costs
+8. **Broad Data Sharing** — data shared with vaguely defined third parties
+9. **Data Sale Permissions** — selling your data is explicitly permitted
+10. **Data Retention Ambiguity** — "kept as long as necessary", undefined
+11. **Account Termination Rights** — vague grounds, no appeal
+12. **Forced Venue / Jurisdiction** — disputes fought where they choose
+13. **Hidden Fees / Pricing Changes** — surprise charges, mid-term changes
+14. **Broad IP / Content Ownership** — expansive rights over your content
+15. **Contradictory Clauses** — the document takes back its own promises
 
-- Evidence over claims — every finding links to actual text
-- Deterministic scoring over AI magic — rules are reproducible
-- Real webpage analysis over mock data — no fake reports
-- Explainability over black boxes — you understand why it flagged something
-- Reliability over features — fewer false positives, fewer false negatives
-
----
-
-## Risk Categories
-
-Exetazo scans for 15 common problematic clause types:
-
-1. **Unilateral Modification** — Company can change terms anytime
-2. **Mandatory Arbitration** — You waive the right to sue in court
-3. **Class-Action Waiver** — You can't join a class lawsuit
-4. **Automatic Renewal** — Subscription auto-renews without explicit reminder
-5. **Difficult Cancellation** — Hard to cancel; require calling, mailing, etc.
-6. **Broad Liability Limitation** — Company limits damages in unreasonable ways
-7. **Broad Indemnification** — You agree to cover company's legal costs
-8. **Broad Data Sharing** — Data shared with many third parties
-9. **Data Sale/Sharing Permissions** — Explicit permission to sell user data
-10. **Data Retention Ambiguity** — Unclear how long data is kept
-11. **Account Termination Rights** — Company can terminate your account for vague reasons
-12. **Mandatory Venue/Jurisdiction** — Forces disputes to specific location
-13. **Hidden Fees or Pricing Changes** — Unclear pricing or surprise charges
-14. **Broad IP/Content Ownership** — Company claims ownership of your content
-15. **Contradictory Clauses** — Document contradicts itself
+Each category has an explicit definition, a rule catalog entry with negation
+guards, a severity, jurisdiction notes, and tests — including real-world
+false-positive controls (see `tests/rules.test.ts`).
 
 ---
 
-## Architecture
+## AI's role, precisely
+
+**Does:** propose paragraph-level candidates for categories the rules missed,
+when `OPENAI_API_KEY` is configured. Without it the pipeline is fully
+rules-based.
+
+**Does not:** set severity (rule catalog), set the score (fixed arithmetic),
+write evidence (always the document's own text), or answer questions (this is a
+scanner, not a chatbot).
+
+---
+
+## Privacy — exact behavior
+
+- **The backend is stateless.** No database, no cache, no analytics. The only
+  lines it ever logs are its own startup message (port, semantic mode).
+- Document text exists only in memory for the duration of a request. On Vercel,
+  the platform records invocation metadata (time, status, duration) — not
+  request bodies.
+- **The extension stores exactly one thing:** the most recent report —
+  structured findings, not page text — in `chrome.storage.session`, which
+  clears when the browser closes.
+- No accounts, no sign-up, no tracking, no telemetry.
+- **Secrets stay server-side.** Model credentials are server environment
+  variables only; the extension ships no credentials (see `.env.example`).
+
+---
+
+## Repository layout
 
 ```
-EXETAZO CHROME EXTENSION
-        │
-┌───────┴────────┐
-│                │
-Extension     Backend API
-(UI + Extract) (Analysis + Secrets)
-│
-├── Manifest V3
-├── Content Script (text extraction)
-├── Side Panel (report display)
-└── Popup (quick launcher)
-
-Backend
-├── Text → Clause Detection (AI semantic)
-├── Rules Engine (deterministic scoring)
-├── Risk Catalog (15 categories)
-└── Score Calculation (no AI guessing)
+api/analyze.ts               Vercel serverless endpoint (same contract as the local API)
+extension/
+  manifest.json              MV3 manifest (dev origins; production builds narrow host_permissions)
+  src/background.ts          service worker: inject content script, call API, session storage
+  src/content.ts             page-text extraction + clause highlighting
+  src/sidepanel.ts           report UI   |  src/popup.ts  launcher
+  src/messages.ts            extension contracts + build-time API base
+  webpack.config.cjs         bundles src/*.ts → dist/
+  assets/                    toolbar/store icons, logo (logoo.png is the master source)
+server/
+  api/main.ts, server.ts     local HTTP API (framework-free node:http, CORS, error contract)
+  analyzer/clean.ts          noise removal, sections, offsets, word count
+  analyzer/analyze.ts        pipeline: clean → rules → contradictions → optional AI → score
+  rules/catalog.ts           the 15 categories: patterns, negations, severity, guidance
+  rules/engine.ts            matching + finding construction
+  rules/contradictions.ts    cross-checks for self-contradicting documents
+  scoring/score.ts           fixed-penalty scoring + risk bands
+  llm/                       optional OpenAI-compatible semantic layer
+shared/types.ts              finding / report / error contracts
+scripts/                     build + asset tooling (see "Asset regeneration")
+web/                         landing page (static) — Vercel Root Directory = web
+tests/                       jest suites (see "Testing")
 ```
 
 ---
 
-## What It's NOT
+## Development
 
-**Not a legal chatbot.** Exetazo doesn't answer questions or provide legal advice.
-
-**Not a substitute for a lawyer.** Read findings as potential concerns, not definitive legal opinions.
-
-**Not authoritative.** Jurisdiction, context, and specific wording matter. Exetazo flags *potential* risks, not absolute right/wrong.
-
-**Not based on arbitrary AI scores.** Final severity comes from structured rules, not LLM opinions.
-
----
-
-## Technical Approach
-
-**Deterministic Scoring:**
-- Start at 100
-- Subtract penalties for each finding (Critical -20, High -10, Medium -5, Low -2)
-- Avoid double-counting the same underlying issue
-- Score reflects cumulative risk, not AI confidence
-
-**AI's Role:**
-- Semantic clause detection (understands meaning, not just keywords)
-- Explanation generation (why this clause is risky)
-- Contradiction detection (finds conflicting statements)
-- Summarization (explains in plain English)
-
-**AI's Non-Role:**
-- Determining final score
-- Deciding severity levels
-- Validating findings (rules do that)
-
----
-
-## Quick Start
+Prerequisites: Node 18+. (Python 3 with Pillow is needed only for the OG-card script.)
 
 ```bash
-# Install dependencies
-npm install
-
-# Development
-npm run dev
-
-# Build extension
-npm run build:extension
-
-# Build backend
-npm run build:server
-
-# Run tests
-npm run test
+npm install                 # or: npm ci — clean, lockfile-exact install
+npm test                    # full test suite
+npm run build:server        # tsc → dist/server
+npm run start:server        # API on :8787 (rules-only unless OPENAI_API_KEY is set)
+npm run build:extension     # webpack + asset copy → extension/dist
 ```
 
-### Load Extension in Chrome
+Server environment variables (all optional — see `.env.example`): `OPENAI_API_KEY`,
+`OPENAI_BASE_URL`, `OPENAI_MODEL` enable the semantic layer; `PORT` changes the
+port (default 8787).
 
-1. Run `npm run build:extension`
-2. Open `chrome://extensions`
-3. Enable **Developer Mode** (top right)
-4. Click **Load Unpacked**
-5. Select the `extension/dist` folder
-6. Open any legal webpage (try a SaaS Terms of Service)
-7. Click the Exetazo icon → Scan
+### Load the extension in Chrome (unpacked)
+
+1. `npm run build:extension`
+2. `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select `extension/dist`
+3. Start the API: `npm run start:server` (the dev build calls `http://127.0.0.1:8787`)
+4. Open any terms page, click the Exetazo icon, press **Scan**
 
 ---
 
-## Project Structure
+## Production configuration
 
+Two Vercel projects deploy from this one repo:
+
+| Project | Root Directory | Framework | Notes |
+|---|---|---|---|
+| Landing page | `web` | Other | No build step, no env vars. Live at exetazo.xyz (www canonical). |
+| Analysis API | repo root | Other | Serves `POST /api/analyze` + `GET /api/health` from `api/analyze.ts`. Rules-only, so it needs **no environment variables and no secrets**. |
+
+Point the extension at the deployed API at build time:
+
+```bash
+EXETAZO_API_ORIGIN=https://your-api-host.vercel.app npm run build:extension
 ```
-exetazo/
-├── extension/              # Chrome Manifest V3 extension
-│   ├── manifest.json
-│   ├── content/            # Content script (text extraction)
-│   ├── sidepanel/          # Report display
-│   ├── popup/              # Quick launcher
-│   └── assets/
-│
-├── server/                 # Analysis backend
-│   ├── api/                # Express/HTTP endpoints
-│   ├── analyzer/           # Clause detection + analysis
-│   ├── rules/              # 15 risk categories + logic
-│   ├── scoring/            # Deterministic score calculation
-│   └── llm/                # LLM integration (semantic)
-│
-├── shared/                 # Shared TypeScript types
-│   └── types.ts            # Finding schema, API contracts
-│
-├── web/                    # Landing page (static)
-│   └── index.html
-│
-├── tests/                  # Automated tests
-│   ├── extraction.test.ts
-│   ├── rules.test.ts
-│   ├── scoring.test.ts
-│   └── integration.test.ts
-│
-└── README.md (this file)
-```
+
+The value becomes the bundle's API base and the **only** entry in the built
+manifest's `host_permissions`. Unset means local development (`http://127.0.0.1:8787`,
+dev origins kept). Non-HTTPS origins other than loopback fail the build. This is
+configuration, not a secret — the extension ships no credentials.
 
 ---
 
-## Data Privacy
-
-**Exetazo minimizes data retention:**
-
-- Legal text is analyzed server-side, then discarded
-- Full document is never logged or stored by default
-- Only structured findings (IDs, categories, severity) persist
-- Never sells or shares user data
-- Clear privacy policy on landing page
-
-**Secrets stay server-side:**
-- API keys, LLM credentials, model endpoints — never in browser
-- Extension communicates only via HTTPS API calls
-- No credentials in extension source, content scripts, or `.env` files
-
----
-
-## Legal Disclaimer
-
-Exetazo is an educational and risk-detection tool. It:
-
-- Does NOT provide legal advice
-- Does NOT create an attorney-client relationship
-- Does NOT guarantee a clause is legal or illegal
-- Does NOT replace a lawyer
-- Flags *potential concerns* for human review
-
-Jurisdiction, context, and specific wording all matter. Always consult a lawyer for important agreements.
-
----
-
-## Demo Flow (Hackathon)
-
-```
-1. Open real legal webpage (e.g., Notion's Terms of Service)
-2. Click Exetazo extension icon
-3. Hit "Scan"
-4. Wait for analysis (2–5 seconds)
-5. See report: "42 / 100 HIGH RISK"
-6. Read severity counts (4 Critical, 3 High, 3 Medium, 2 Low)
-7. Click "Unilateral Modification" finding
-8. Page scrolls and highlights the actual clause (lime, settling to lavender)
-9. Side panel shows:
-   - EVIDENCE: "We reserve the right to modify these terms at any time..."
-   - EXPLANATION: "Company can change terms without notice or consent..."
-   - RECOMMENDATION: "Negotiate a clause requiring 30-day notice..."
-   - CONFIDENCE: 95%
-```
-
-### Reproducible demo
-
-Run the backend **rules-only** so the score is pure rules and re-scanning the same
-page always reproduces it:
+## Reproducible demo
 
 ```bash
 env -u OPENAI_API_KEY -u OPENAI_BASE_URL -u OPENAI_MODEL npm run start:server
 ```
 
-With semantic analysis enabled the model can contribute findings the rules
-missed, and those findings subtract from the score — so two scans of the same
-page could differ. Verify the whole path at any time (five live policies, each
-scanned twice, with the determinism verdict):
+The score is rules-only either way — semantic findings are advisory and cannot
+move it (enforced in `server/scoring/score.ts`, proven in `tests/analyzer.test.ts`).
+Verify the whole path against five live policies, each scanned twice:
 
 ```bash
 npm run validate:pages
 ```
 
----
-
-## Build Order
-
-**Phase 1 (Must Ship):**
-- Manifest V3 + content extraction + side panel UI
-- Backend analysis API + finding schema
-- First 5 risk rules (unilateral modification, arbitration, class waiver, auto-renewal, cancellation)
-- Deterministic scoring (no AI yet)
-
-**Phase 2 (If Time):**
-- Remaining 10 risk categories
-- AI semantic analysis + explanations
-- Source clause highlighting
-- Landing page
-
-**Phase 3 (Polish):**
-- Contradiction detection
-- False positive/negative review
-- Performance optimization
-- UI refinement
-
----
-
-## Priorities
-
-1. **Accuracy** — Better to flag fewer findings correctly than flood users with false positives
-2. **Evidence** — Every finding must point to actual text
-3. **Determinism** — Score and severity must be reproducible
-4. **Speed** — Scan should complete in <5 seconds
-5. **Clarity** — Users understand what the tool found and why it matters
+Demo flow: open a real terms page → Scan → read the score and severity counts →
+click a finding → the exact clause highlights on the page (lime, settling to
+lavender) → check EVIDENCE, EXPLANATION, RECOMMENDATION.
 
 ---
 
 ## Testing
 
-Test against real legal documents with:
-- Long documents (10k+ words)
-- Dense legalese
-- Multiple sections and subsections
-- Navigation noise (headers, footers, sidebars)
-- Auto-generated content
-- Contradictory language
+```bash
+npm test                            # or: npx jest --runInBand (low-memory devices)
+```
 
-Automated tests cover:
-- Text extraction (handles noise, preserves legal text)
-- Clause detection (finds target patterns)
-- Rule evaluation (all 15 categories work correctly)
-- Scoring (reproducible, no double-counting)
-- API contracts (extension ↔ backend communication)
-- Error handling (graceful degradation)
+- `extraction.test.ts` — cleaning against verbatim real-policy excerpts: noise removed, clause text preserved verbatim, offsets consistent
+- `rules.test.ts` — all 15 categories with true positives, real-world false-positive controls, and negation cases
+- `contradictions.test.ts` — contradiction pairs, reconciliation guards, end-to-end scoring
+- `scoring.test.ts` — penalties, bands, floors, duplicate prevention, reproducibility, advisory exclusion
+- `analyzer.test.ts` — the pipeline on real documents, plus the determinism boundary (any AI candidate set, and a model returning fabricated evidence, cannot change the score)
+- `api.test.ts` / `vercel-api.test.ts` — the HTTP contracts: validation, error codes, CORS, byte-identical repeat scans
+- `llm.test.ts` — malformed/model-failure handling and graceful degradation to rules-only
+- `extension-dom.test.ts` — extraction and highlighting in jsdom against a verbatim live ToS page (noise removal, repeated-clause section anchoring, table cells, hostile text)
+- `extension-render.test.ts` — the side panel renders untrusted report content as text, labels advisory findings, and shows the clear no-analysis state
+
+---
+
+## Asset regeneration
+
+```bash
+python3 scripts/gen-brand-cuts.py   # logo cuts from the master (byte-identical output)
+node scripts/gen-icons.cjs          # toolbar/store icons
+python3 scripts/gen-og-card.py      # social preview card (needs Pillow)
+```
+
+---
+
+## Legal disclaimer
+
+Exetazo flags *potential* risks for human review. It does not provide legal
+advice, does not create an attorney-client relationship, does not decide whether
+a clause is legal or illegal, and does not replace a lawyer. Jurisdiction,
+context, and specific wording all matter — consult a lawyer for important
+agreements.
+
+---
+
+## Priorities
+
+1. **Accuracy** — fewer, correct findings beat a flood of false positives
+2. **Evidence** — every finding points to actual text
+3. **Determinism** — score, severity, and findings are reproducible
+4. **Speed** — a scan completes well inside five seconds
+5. **Clarity** — users understand what was found and why it matters
 
 ---
 
 ## Resources
 
-**Hackathon:**
-- LexHack 2026 Devpost: https://lexhack-2026.devpost.com/
-- Submission Deadline: Friday, June 12, 2026 at 10:00 PM EST
-- Demo Day: Saturday, June 13, 2026 (presentations + judging)
-- Prizes: Free .xyz domain for all participants, Adaption Labs premium access, referral awards ($500/$300/$200)
-- Goal: Help your project actually launch, not gather dust
+- [Chrome Extensions documentation](https://developer.chrome.com/docs/extensions/) · [Manifest V3](https://developer.chrome.com/docs/extensions/develop/concepts/mv3-overview) · [Side Panel API](https://developer.chrome.com/docs/extensions/reference/api/sidePanel)
+- [Chrome Web Store publishing](https://developer.chrome.com/docs/webstore/publish/)
+- [Vercel documentation](https://vercel.com/docs)
 
-**Chrome Extension Development:**
-- Chrome Extension Dev Guide: https://developer.chrome.com/docs/extensions/
-- Manifest V3 Spec: https://developer.chrome.com/docs/extensions/mv3/
-- Content Scripts: https://developer.chrome.com/docs/extensions/mv3/content_scripts/
-- Side Panels API: https://developer.chrome.com/docs/extensions/reference/sidePanel/
-- Service Workers: https://developer.chrome.com/docs/extensions/mv3/service_workers/
-
-**Privacy & Security:**
-- Chrome Extension Privacy Best Practices: https://support.google.com/chrome?p=ext_privacy_best_practices
-- Content Security Policy: https://developer.chrome.com/docs/extensions/mv3/content_security_policy/
-- Data Privacy Guidelines: https://www.privacyshield.gov/
-
-**Legal & Compliance:**
-- Legal Terms of Service Analysis: https://www.eff.org/deeplinks (EFF resource for digital rights)
-- Consumer Rights: https://www.consumer.ftc.gov/
-- GDPR Compliance (for EU users): https://gdpr-info.eu/
-
-**AI & NLP:**
-- OpenAI API Docs: https://platform.openai.com/docs/api-reference
-- LLM Safety: https://openai.com/safety/
-- Structured Outputs: https://platform.openai.com/docs/guides/structured-outputs
-- Prompt Engineering: https://platform.openai.com/docs/guides/prompt-engineering
-
-**Testing & Quality:**
-- Jest Testing Library: https://jestjs.io/
-- Testing Best Practices: https://developer.chrome.com/docs/extensions/mv3/testing/
-- Real Legal Documents for Testing: Use actual ToS from Notion, Stripe, GitHub, AWS for test suite
-
-**Deployment & Hosting:**
-- Chrome Web Store Publishing: https://developer.chrome.com/docs/webstore/publish/
-- Vercel (Backend API): https://vercel.com/docs
-- GitHub Actions (CI/CD): https://docs.github.com/en/actions
-
-**Community & Help:**
-- Chrome Extensions Discord (Google-run): https://discord.gg/ChromeExtensions
-- LexHack 2026 Discord: [Invite link in Devpost submission]
-- Stack Overflow Tags: `google-chrome-extension`, `manifest-v3`
-
----
-
-**Built for LexHack 2026**
-
-**Exetazo — Legal security before you agree.**
+MIT licensed.
