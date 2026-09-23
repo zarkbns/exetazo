@@ -162,10 +162,11 @@ Two Vercel projects deploy from this one repo:
 | Landing page | `web` | Other | No build step, no env vars. Live at exetazo.xyz (www canonical). |
 | Analysis API | repo root | Other | Serves `POST /api/analyze` + `GET /api/health` from `api/analyze.ts`. Rules-only, so it needs **no environment variables and no secrets**. |
 
-Point the extension at the deployed API at build time:
+Point the extension at the deployed API at build time — the value used for the
+Firefox AMO submission (see `REVIEWERS.md` for the reviewer build steps):
 
 ```bash
-EXETAZO_API_ORIGIN=https://your-api-host.vercel.app npm run build:extension
+EXETAZO_API_ORIGIN=https://api.exetazo.xyz npm run build:extension
 ```
 
 The value becomes the bundle's API base and the **only** entry in the built
