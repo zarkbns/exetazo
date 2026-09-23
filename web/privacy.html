@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy — Exetazo</title>
+  <meta name="description" content="What Exetazo receives, what it stores, what its logs contain, and what it never does. Exact behavior, matched to the code." />
+  <link rel="canonical" href="https://www.exetazo.xyz/privacy" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="nav-wrap">
+    <nav class="nav" aria-label="Main">
+      <a href="index.html" class="brand">
+        <img class="brand-mark" src="assets/logo.png" alt="" width="26" height="26" />
+        <span class="brand-name">exetazo</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#how">How it works</a>
+        <a href="index.html#categories">What it checks</a>
+        <a href="index.html#why">Why Exetazo</a>
+        <a href="index.html#disclaimer">Not legal advice</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/zarkbns/exetazo" target="_blank" rel="noopener" class="nav-gh">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="index.html" class="btn btn-nav">Back to site</a>
+      </div>
+    </nav>
+  </div>
+
+  <header class="policy-head container">
+    <span class="section-kicker">Privacy</span>
+    <h1>What we receive. What we keep.<br />Nothing else.</h1>
+    <p>This page states exactly how Exetazo handles your data. Every claim here matches the code — the whole product is open source, so you can check each one.</p>
+  </header>
+
+  <main class="container policy-body">
+
+    <section class="policy-section">
+      <h2>What we receive</h2>
+      <p>When you press <strong>Scan</strong>, the extension sends the analysis API exactly three things:</p>
+      <ul>
+        <li>the text of the page you're scanning, cleaned of navigation and page furniture,</li>
+        <li>the page's title,</li>
+        <li>the page's URL.</li>
+      </ul>
+      <p>Nothing else. No browsing history, no other tabs, no form data, no credentials.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>What we store</h2>
+      <p><strong>Nothing.</strong> The page text lives in memory for the duration of the analysis, the report is sent back, and the memory is released. There is no database, no file storage, no cache, no queue. Reload this claim against the source: neither the API nor the analysis code imports a storage library.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>What the logs contain</h2>
+      <p>The API's only log line is its own startup message. Request bodies are never logged. Our hosting provider (Vercel) records invocation metadata — time, status code, duration — not page text.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>AI providers</h2>
+      <p><strong>The API we host runs with AI disabled.</strong> Scoring and detection are performed by fixed rules on our own infrastructure — no third-party AI service receives your text.</p>
+      <p>For completeness: the codebase supports <em>optional</em> semantic analysis for people who self-host. If you enable it with your own API key, up to 80 paragraphs (500 characters each) of the scanned page are sent to the AI provider <em>you</em> configure, and what comes back is paragraph numbers and category names. Exetazo's own hosted API sends nothing to anyone.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>Browser permissions</h2>
+      <ul>
+        <li><code>activeTab</code> — run the extractor on the page you're scanning, and only after you click Scan.</li>
+        <li><code>scripting</code> — that's what inserts the extractor.</li>
+        <li><code>sidePanel</code> (Chrome) / sidebar (Firefox) — shows the report next to the page. The same UI in both browsers.</li>
+        <li><code>storage</code> — remembers your last report for this browsing session.</li>
+      </ul>
+      <p>No host permissions beyond the analysis API it talks to. No remote code — the extension executes only its own bundled files.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>What the extension keeps</h2>
+      <p>Your most recent report — the findings, plus the page's URL and title — in the browser's session storage. It is never synced anywhere and is erased when you close the browser. Close the browser, and Exetazo has no memory of you.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>Analytics and telemetry</h2>
+      <p>None. Not in the extension, not in the API, not on this site. No accounts, no cookies, no tracking pixels, no crash reporting.</p>
+      <p>One disclosure in the spirit of full honesty: this website loads its typeface from Google Fonts, which is the only third-party request the site makes. The extension and the API make none.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>Retention and deletion</h2>
+      <p>There is nothing to delete, because there is nothing retained. Server-side: nothing survives the request. Browser-side: session storage clears on close, and clearing a site's data in your browser settings removes the rest.</p>
+    </section>
+
+    <section class="policy-section">
+      <h2>If this ever changes</h2>
+      <p>This page is the contract. If a future version of Exetazo handles data differently, this page changes with it — and the open-source history shows exactly what changed and when.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>Exetazo — legal security before you agree. Not legal advice. MIT license.</span>
+      <div class="footer-links">
+        <a href="index.html#how">How it works</a>
+        <a href="index.html#categories">What it checks</a>
+        <a href="index.html#disclaimer">Not legal advice</a>
+        <a href="https://github.com/zarkbns/exetazo" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <span>Last updated: September 22, 2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
