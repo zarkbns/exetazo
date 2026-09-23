@@ -2,7 +2,7 @@
 
 > **Legal security before you agree.**
 
-Exetazo is a Chrome extension (Manifest V3) plus an analysis API that reads terms
+Exetazo is a browser extension (Manifest V3) plus an analysis API that reads terms
 of service, privacy policies, and subscription agreements, flags risky clauses,
 and scores the document with fixed rules — the way a smart-contract audit
 reports vulnerabilities.
@@ -127,7 +127,7 @@ Server environment variables (all optional — see `.env.example`): `OPENAI_API_
 `OPENAI_BASE_URL`, `OPENAI_MODEL` enable the semantic layer; `PORT` changes the
 port (default 8787).
 
-### Load the extension in Chrome (unpacked)
+### Load the extension unpacked
 
 1. `npm run build:extension`
 2. `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select `extension/dist`
