@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { Readable } from 'stream';
-import handler from '../api/analyze';
+import analyzeHandler from '../api/analyze';
+import healthHandler from '../api/health';
 import { MAX_RAW_CHARS } from '../server/analyzer/clean';
 
 interface Captured {
@@ -41,7 +42,7 @@ const TERMS = [
 
 async function post(body: string, url = '/api/analyze') {
   const { res, captured } = makeRes();
-  await handler(makeReq('POST', url, body), res);
+  await analyzeHandler(makeReq('POST', url, body), res);
   return captured;
 }
 
@@ -78,14 +79,14 @@ describe('Vercel serverless endpoint', () => {
 
   it('answers CORS preflight with 204', async () => {
     const { res, captured } = makeRes();
-    await handler(makeReq('OPTIONS', '/api/analyze'), res);
+    await analyzeHandler(makeReq('OPTIONS', '/api/analyze'), res);
     expect(captured.status).toBe(204);
     expect(captured.headers['Access-Control-Allow-Methods']).toContain('POST');
   });
 
   it('exposes a health check', async () => {
     const { res, captured } = makeRes();
-    await handler(makeReq('GET', '/api/health'), res);
+    await analyzeHandler(makeReq('GET', '/api/health'), res);
     expect(captured.status).toBe(200);
     expect(JSON.parse(captured.body)).toEqual({ ok: true });
   });
@@ -116,11 +117,35 @@ describe('Vercel serverless endpoint', () => {
 
   it('returns 404 for unsupported methods and paths', async () => {
     const { res, captured } = makeRes();
-    await handler(makeReq('GET', '/api/analyze'), res);
+    await analyzeHandler(makeReq('GET', '/api/analyze'), res);
     expect(captured.status).toBe(404);
 
     const other = makeRes();
-    await handler(makeReq('POST', '/api/something-else', '{}'), other.res);
+    await analyzeHandler(makeReq('POST', '/api/something-else', '{}'), other.res);
     expect(other.captured.status).toBe(404);
+  });
+});
+
+describe('serverless health endpoint (api/health.ts)', () => {
+  it('answers GET with ok:true and permissive CORS', async () => {
+    const { res, captured } = makeRes();
+    await healthHandler(makeReq('GET', '/api/health'), res);
+    expect(captured.status).toBe(200);
+    expect(JSON.parse(captured.body)).toEqual({ ok: true });
+    expect(captured.headers['Access-Control-Allow-Origin']).toBe('*');
+  });
+
+  it('answers CORS preflight with 204', async () => {
+    const { res, captured } = makeRes();
+    await healthHandler(makeReq('OPTIONS', '/api/health'), res);
+    expect(captured.status).toBe(204);
+    expect(captured.headers['Access-Control-Allow-Methods']).toContain('GET');
+  });
+
+  it('rejects non-GET methods with 405', async () => {
+    const { res, captured } = makeRes();
+    await healthHandler(makeReq('POST', '/api/health', '{}'), res);
+    expect(captured.status).toBe(405);
+    expect(JSON.parse(captured.body).ok).toBe(false);
   });
 });
