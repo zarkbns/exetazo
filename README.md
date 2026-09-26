@@ -143,6 +143,13 @@ panel (the **same** `sidepanel.html` renders — no duplicate UI), and carries t
 gecko settings needed for addons.mozilla.org (`exetazo@exetazo.xyz`, data-collection
 disclosure: website content sent to the API for transient analysis).
 
+**Public installation (AMO):**
+
+- The Firefox add-on is published and available at:
+  - https://addons.mozilla.org/en-US/firefox/addon/exetazo/
+
+**Developer testing (temporary load):**
+
 1. `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** → select `extension/dist-firefox/manifest.json`
 2. Start the API (`npm run start:server`) and open a terms page
 3. Click the Exetazo icon → **Scan** — the sidebar opens with the same report; clicking a finding highlights the clause on the page
