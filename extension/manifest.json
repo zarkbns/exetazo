@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Exetazo — Legal security before you agree",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scans legal agreements for risky clauses with deterministic, evidence-based scoring. Not legal advice.",
   "minimum_chrome_version": "116",
   "permissions": ["activeTab", "scripting", "sidePanel", "storage"],

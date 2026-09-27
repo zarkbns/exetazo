@@ -1,7 +1,7 @@
 # Building Exetazo from source (Mozilla Add-ons review)
 
 This archive contains the complete source code for the Exetazo Firefox
-extension. The submitted package (`exetazo_legal_security_before_you_agree-0.1.0.zip`)
+extension. The submitted package (`exetazo_legal_security_before_you_agree-0.1.1.zip`)
 is built from this source with the steps below. Nothing is minified, and no
 step requires credentials or private keys.
 
@@ -19,7 +19,7 @@ EXETAZO_API_ORIGIN=https://api.exetazo.xyz npm run build:extension
 npx --yes web-ext@10.7.0 build --source-dir extension/dist-firefox --artifacts-dir web-ext-artifacts
 ```
 
-The last step produces `web-ext-artifacts/exetazo_legal_security_before_you_agree-0.1.0.zip` —
+The last step produces `web-ext-artifacts/exetazo_legal_security_before_you_agree-0.1.1.zip` —
 the package submitted for review.
 
 ## Verifying the build matches the submitted package
