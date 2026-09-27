@@ -103,26 +103,51 @@ async function highlightInActiveTab(
   }
 }
 
+/**
+ * Firefox closes a message channel as soon as the listener returns and
+ * delivers the listener's returned Promise as the response; the Chrome
+ * convention — return true, then call sendResponse later — is ignored there,
+ * so every async reply used to arrive as undefined and the scan died silently
+ * in the UI. The `browser` global exists only in Firefox, so the response
+ * contract is detected once and each async handler is delivered through the
+ * contract the running browser implements. Payloads are identical either way.
+ */
+const FIREFOX_PROMISE_RESPONSES =
+  typeof (globalThis as { browser?: unknown }).browser === 'object';
+
+function deliverAsync<T>(
+  work: Promise<T>,
+  sendResponse: (value: T) => void,
+): boolean | Promise<T> {
+  if (FIREFOX_PROMISE_RESPONSES) return work;
+  void work.then(sendResponse);
+  return true;
+}
+
 chrome.runtime.onMessage.addListener(
   (message: { type?: string; evidence?: string; section?: string }, _sender, sendResponse) => {
     if (message?.type === 'EXETAZO_SCAN') {
-      scanActiveTab()
-        .then((outcome) => sendResponse(outcome))
-        .catch((err: unknown) => sendResponse({ ok: false, error: String(err) }));
-      return true;
+      return deliverAsync(
+        scanActiveTab().catch((err: unknown): ScanOutcome => ({ ok: false, error: String(err) })),
+        sendResponse,
+      );
     }
     if (message?.type === 'EXETAZO_HIGHLIGHT') {
-      highlightInActiveTab(message.evidence ?? '', message.section)
-        .then((result) => sendResponse(result))
-        .catch(() => sendResponse({ ok: false, found: false }));
-      return true;
+      return deliverAsync(
+        highlightInActiveTab(message.evidence ?? '', message.section).catch(
+          () => ({ ok: false, found: false }),
+        ),
+        sendResponse,
+      );
     }
     if (message?.type === 'EXETAZO_GET_LAST_SCAN') {
-      chrome.storage.session
-        .get('lastScan')
-        .then((data) => sendResponse({ ok: true, lastScan: (data.lastScan as LastScan) ?? null }))
-        .catch(() => sendResponse({ ok: false, error: 'Storage unavailable' }));
-      return true;
+      return deliverAsync(
+        chrome.storage.session
+          .get('lastScan')
+          .then((data) => ({ ok: true, lastScan: (data.lastScan as LastScan) ?? null }))
+          .catch(() => ({ ok: false, error: 'Storage unavailable' })),
+        sendResponse,
+      );
     }
     return undefined;
   },
